@@ -25,7 +25,7 @@ interface TableProps<T> {
     filteredCount: number;
     totalPages: number;
     limit: number;
-    page: number;
+    page: string;
   };
 }
 

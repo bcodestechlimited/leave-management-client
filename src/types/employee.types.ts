@@ -3,6 +3,10 @@ import { EmployeeLeaveBalance } from "./leave.types";
 export interface Employee {
   _id: string;
   name: string;
+  firstname: string;
+  middlename: string;
+  surname: string;
+  gender: string;
   email: string;
   avatar: string;
   jobRole: string;

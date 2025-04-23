@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useEmployeeActions, useEmployeeStore } from "@/store/useEmployeeStore";
-import { cn } from "@/lib/utils";
+import { cn, getEmployeeFullName } from "@/lib/utils";
 import { updateEmployeeProfileAPI } from "@/api/employee.api";
 import { toast } from "sonner";
 import { UserCheck, UserX } from "lucide-react";
@@ -89,9 +89,21 @@ export default function EmployeeProfile() {
         <div className="mb-4 flex flex-col gap-3">
           <img className="w-44 h-44 rounded-lg" src={employee?.avatar} alt="" />
           <h2 className="text-xl font-semibold">Personal Information</h2>
-          <p className="text-gray-600">
+          {/* <p className="text-gray-600">
             <span className="font-semibold">Name: </span>
             {employee?.name ?? "N/A"}
+          </p> */}
+          <p className="text-gray-600">
+            <span className="font-semibold">First Name: </span>
+            {employee?.firstname ?? "N/A"}
+          </p>
+          <p className="text-gray-600">
+            <span className="font-semibold">Middle Name: </span>
+            {employee?.middlename ?? "N/A"}
+          </p>
+          <p className="text-gray-600">
+            <span className="font-semibold">Last Name: </span>
+            {employee?.surname ?? "N/A"}
           </p>
           <p className="text-gray-600">
             <span className="font-semibold">Email: </span> {employee?.email}
@@ -108,8 +120,11 @@ export default function EmployeeProfile() {
           </p>
           <p className="text-gray-600 flex gap-2 items-center">
             <span className="font-semibold">Line Manager: </span>
-            {(employee?.lineManager?.name || employee?.lineManager?.email) ??
-              "N/A"}{" "}
+            {employee?.lineManager
+              ? getEmployeeFullName(employee?.lineManager)
+              : "N/A"}
+            {/* {(employee?.lineManager?.name || employee?.lineManager?.email) ??
+              "N/A"}{" "} */}
             {employee?.lineManager ? (
               employee?.lineManager?.isOnLeave ? (
                 <UserX className="text-red-500" />
@@ -120,7 +135,9 @@ export default function EmployeeProfile() {
           </p>
           <p className="text-gray-600 flex gap-2 items-center">
             <span className="font-semibold">Reliever: </span>
-            {(employee?.reliever?.name || employee?.reliever?.email) ?? "N/A"}
+            {employee?.reliever
+              ? getEmployeeFullName(employee?.reliever)
+              : "N/A"}{" "}
             {employee?.reliever ? (
               employee?.reliever?.isOnLeave ? (
                 <UserX className="text-red-500" />

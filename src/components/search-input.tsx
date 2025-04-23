@@ -14,7 +14,7 @@ export default function SearchInput() {
       setSearchParams((prev) => {
         const newParams = new URLSearchParams(prev);
         newParams.set("search", searchInput);
-        newParams.set("page", "1"); // Reset to first page on new search
+        // newParams.set("page", "1"); // Reset to first page on new search
         return newParams;
       });
     }, 300);

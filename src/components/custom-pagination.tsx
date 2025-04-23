@@ -7,7 +7,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 interface PaginationProps {
@@ -16,30 +15,43 @@ interface PaginationProps {
     filteredCount: number;
     totalPages: number;
     limit: number;
-    page: number;
+    page: string;
   };
 }
 
 export default function CustomPagination({ pagination }: PaginationProps) {
-  const { totalPages, page = 1, limit = 10 } = pagination;
+  // console.log({ pagination });
+
+  const { totalPages } = pagination;
   const [searchParams, setSearchParams] = useSearchParams();
 
-  useEffect(() => {
-    if (!searchParams.has("page")) {
-      searchParams.set("page", page.toString());
-    }
-    if (!searchParams.has("limit")) {
-      searchParams.set("limit", limit.toString());
-    }
-    setSearchParams(searchParams);
-  }, []);
+  // useEffect(() => {
+  //   console.log("mounting...");
+
+  //   if (!searchParams.has("page")) {
+  //     searchParams.set("page", page.toString());
+  //   }
+  //   if (!searchParams.has("limit")) {
+  //     searchParams.set("limit", limit.toString());
+  //   }
+  //   setSearchParams(searchParams);
+  // }, []);
 
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
 
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return; // Prevent invalid page navigation
-    setSearchParams({ page: page.toString() });
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("page", newPage.toString());
+    console.log({ newParams: newParams.toString() });
+
+    setSearchParams(newParams);
+
+    console.log("Donee........");
   };
+
+  // console.log({ currentPage });
+  // console.log({ searchParams: searchParams.toString() });
 
   const renderPageNumbers = () => {
     const pages = [];

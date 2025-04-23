@@ -6,8 +6,9 @@ import { Params } from "@/types/params.types";
 export const getAllEmployees = async (params: Params) => {
   try {
     const response = await axiosInstance.get(`/employee`, { params });
+
     const employees = response?.data?.data?.employees;
-    const pagination = response?.data?.pagination;
+    const pagination = response?.data?.data?.pagination;
 
     return { employees, pagination };
   } catch (error) {
@@ -59,8 +60,6 @@ export const acceptInvite = async (payload: {
 };
 
 export const updateEmployeeDetails = async (payload: any) => {
-  console.log(payload);
-
   try {
     const response = await axiosInstance.put(
       `/employee/admin/employee/${payload.employeeId}`,
@@ -147,8 +146,6 @@ export const updateEmployeeProfileAPI = async (
   data: Partial<UpdateEmployee>
 ) => {
   try {
-    console.log(data);
-
     const response = await axiosInstance.put(`/employee/auth`, data, {
       headers: {
         "Content-Type": "multipart/form-data",

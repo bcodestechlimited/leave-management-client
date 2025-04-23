@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -32,13 +32,26 @@ export default function Employee() {
 
   const page = parseInt(searchParams.get("page") || "1", 10);
   const search = searchParams.get("search") || "";
+
   const queryClient = useQueryClient();
 
   // Fetch employees using useQuery
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["getAllEmployees", page, search],
-    queryFn: () => getAllEmployees({ page, limit: 10, search }),
+    queryFn: () => {
+      console.log("API called with:", { page, limit: 10, search });
+      return getAllEmployees({ page, limit: 10, search });
+    },
   });
+
+  // Debug URL parameter changes
+  useEffect(() => {
+    console.log("URL params changed:", {
+      page: searchParams.get("page"),
+      limit: searchParams.get("limit"),
+      search: searchParams.get("search"),
+    });
+  }, [searchParams]); // Triggers on any param change
 
   const handleEditClick = (employee: Employee) => {
     setEmployeeToEdit(employee);
@@ -114,6 +127,10 @@ export default function Employee() {
     },
   ];
 
+  // console.log("URL params:", searchParams.toString());
+
+  console.log({ employees: data?.employees, pagination: data?.pagination });
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -128,7 +145,6 @@ export default function Employee() {
             Error: {error ? error.message : null}
           </div>
         ) : null}
-
         <DataTable
           columns={columns}
           data={data?.employees || []}

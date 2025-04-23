@@ -115,3 +115,8 @@ export function capitalizeWords(str: string): string {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+export const getEmployeeFullName = (employee: Employee) => {
+  const { firstname, middlename, surname } = employee;
+  return [firstname, middlename, surname].filter(Boolean).join(" ");
+};

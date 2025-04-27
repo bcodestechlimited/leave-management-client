@@ -33,7 +33,7 @@ export default function InviteModal({ isOpen, onClose }: InviteModalProps) {
       toast.success("Invite link sent successfully!");
     },
     onError: (error: Error) => {
-      toast.success("Something went wrong");
+      toast.error("Something went wrong");
       console.error("Failed to", error);
     },
   });

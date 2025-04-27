@@ -37,6 +37,7 @@ import EmployeeDetail from "./pages/employee/employee-detail";
 import EmployeeLeaveDetail from "./pages/employee/employee-leave-detail";
 import TenantProfileUpdate from "./pages/tenant/tenant-profile-update";
 import ClientLeaveDetail from "./pages/tenant/leave/client-leave-detail";
+import LineManagers from "./pages/tenant/line-manager";
 
 const queryClient = new QueryClient();
 
@@ -105,6 +106,10 @@ function App() {
             {
               path: "level",
               element: <Levels />,
+            },
+            {
+              path: "line-manager",
+              element: <LineManagers />,
             },
           ],
         },

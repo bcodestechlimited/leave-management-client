@@ -1,34 +1,28 @@
-import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllEmployees } from "@/api/employee.api";
 import SearchInput from "@/components/search-input";
 import EditEmployeeModal from "./modals/edit-employee-modal";
-import { Eye } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import DataTable from "@/components/table";
 import { formatDate } from "@/lib/utils";
 import { updateEmployeeDetailsByTenant } from "@/api/tenant.api";
 import { toast } from "sonner";
-
-interface Employee {
-  _id: string;
-  name: string;
-  email: string;
-  jobRole: string;
-  levelId: {
-    _id: string;
-    name: string;
-  };
-  createdAt: string;
-  isAdmin: boolean;
-}
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import type { Employee } from "@/types/employee.types";
 
 export default function Employee() {
   const [searchParams] = useSearchParams();
-  // const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // Manage modal state
-  const [employeeToEdit, setEmployeeToEdit] = useState<Employee | null>(null); // Store employee to edit
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); 
+  const [employeeToEdit, setEmployeeToEdit] = useState<Employee | null>(null);
+  
 
   const page = parseInt(searchParams.get("page") || "1", 10);
   const search = searchParams.get("search") || "";
@@ -39,23 +33,18 @@ export default function Employee() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["getAllEmployees", page, search],
     queryFn: () => {
-      console.log("API called with:", { page, limit: 10, search });
       return getAllEmployees({ page, limit: 10, search });
     },
   });
 
-  // Debug URL parameter changes
-  useEffect(() => {
-    console.log("URL params changed:", {
-      page: searchParams.get("page"),
-      limit: searchParams.get("limit"),
-      search: searchParams.get("search"),
-    });
-  }, [searchParams]); // Triggers on any param change
-
   const handleEditClick = (employee: Employee) => {
     setEmployeeToEdit(employee);
-    setIsEditModalOpen(true); // Open modal when edit button is clicked
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setEmployeeToEdit(null);
+    setIsEditModalOpen(false);
   };
 
   // Mutation for updating employee details
@@ -74,16 +63,24 @@ export default function Employee() {
 
   const columns = [
     {
-      header: "Name",
-      render: (row: any) => row?.name || "N/A",
+      header: "First Name",
+      render: (row: any) => row?.firstname || "N/A",
+    },
+    {
+      header: "Middle Name",
+      render: (row: any) => row?.middlename || "N/A",
+    },
+    {
+      header: "Surname",
+      render: (row: any) => row?.surname || "N/A",
     },
     {
       header: "Email",
       render: (row: any) => row?.email || "N/A",
     },
     {
-      header: "Role",
-      render: (row: any) => row.jobRole || "N/A",
+      header: "Gender",
+      render: (row: any) => row.gender || "N/A",
     },
     {
       header: "Level",
@@ -96,40 +93,42 @@ export default function Employee() {
     {
       header: "Action",
       render: (row: any) => (
-        <div className="flex gap-2">
-          <Button
-            onClick={() => {
-              updateEmployee({
-                _id: row?._id,
-                isAdmin: !row?.isAdmin,
-              });
-            }}
-            disabled={isUpdatingEmployee}
-            variant={row?.isAdmin ? "destructive" : "default"}
-            size="sm"
-          >
-            {row?.isAdmin ? "Revoke Admin" : "Make Admin"}
-          </Button>
-          <Button
-            onClick={() => handleEditClick(row)}
-            variant="outline"
-            size="sm"
-          >
-            Update
-          </Button>
-          <Button variant="outline" size="sm">
-            <Link to={`/dashboard/tenant/employee/${row?._id}`}>
-              <Eye />
-            </Link>
-          </Button>
-        </div>
+        <DropdownMenu modal={false}>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="p-2 text-gray-600 hover:bg-gray-200 rounded-full outline-none"
+              aria-label="Open actions"
+            >
+              <EllipsisVertical />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-fit">
+            <DropdownMenuItem
+              className=" cursor-pointer hover:bg-gray-200"
+              onClick={() => handleEditClick(row)}
+            >
+              Update
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              className=" cursor-pointer"
+              onClick={() => {
+                return null;
+                updateEmployee({
+                  _id: row?._id,
+                  isAdmin: !row?.isAdmin,
+                });
+              }}
+              disabled={isUpdatingEmployee}
+            >
+              {row?.isAdmin ? "Revoke Admin" : "Make Admin"}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
     },
   ];
-
-  // console.log("URL params:", searchParams.toString());
-
-  console.log({ employees: data?.employees, pagination: data?.pagination });
 
   return (
     <div className="space-y-6">
@@ -157,7 +156,7 @@ export default function Employee() {
       {isEditModalOpen && employeeToEdit && (
         <EditEmployeeModal
           isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
+          onClose={closeEditModal}
           employee={employeeToEdit}
         />
       )}

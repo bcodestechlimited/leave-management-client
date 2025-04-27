@@ -7,9 +7,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getEmployeeFullName } from "@/lib/utils";
 import { Leave } from "@/types/leave.types";
 import { useState } from "react";
+import { Employee } from "@/types/employee.types";
 
 interface LeaveActionModalProps {
   isOpen: boolean;
@@ -62,23 +63,25 @@ export default function LeaveRequestActionModal({
         <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
           <div>
             <p className="text-sm font-medium mb-2">
-              Employee: {leaveRequest?.employee?.name}
+              <strong> Employee: </strong>
+              {getEmployeeFullName(leaveRequest?.employee as Employee)}
             </p>
             <p className="text-sm font-medium mb-2">
-              Line Manager: {leaveRequest?.lineManager?.name}
+              <strong> Line Manager: </strong>
+              {getEmployeeFullName(leaveRequest?.lineManager as Employee)}
             </p>
             <p className="text-sm font-medium mb-2">
-              Duration: {leaveRequest?.duration} Days
+              <strong>Duration: </strong> {leaveRequest?.duration} Days
             </p>
-            <p className="text-sm font-semibold">
-              <span className="font-medium">Time Frame:</span>{" "}
+            <p className="text-sm">
+              <span className=" font-semibold">Time Frame: </span>
               {formatDate(leaveRequest?.startDate || "")} -{" "}
               {formatDate(leaveRequest?.resumptionDate || "")}
             </p>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Reason</label>
+            <label className="text-sm font-semibold">Reason</label>
             <Textarea
               {...register("reason", { required: "Reason is required" })}
               placeholder={`Enter reason for ${status || "action"}...`}

@@ -5,7 +5,30 @@ import { Params } from "@/types/params.types";
 
 export const getAllEmployees = async (params: Params) => {
   try {
-    const response = await axiosInstance.get(`/employee`, { params });
+    const response = await axiosInstance.get(`/employee?accountType=employee`, {
+      params,
+    });
+
+    const employees = response?.data?.data?.employees;
+    const pagination = response?.data?.data?.pagination;
+
+    return { employees, pagination };
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch employees"
+      );
+    }
+    throw error;
+  }
+};
+
+export const getAllLineManagers = async (params: Params) => {
+  try {
+    const response = await axiosInstance.get(
+      `/employee?accountType=lineManager`,
+      { params }
+    );
 
     const employees = response?.data?.data?.employees;
     const pagination = response?.data?.data?.pagination;
@@ -199,6 +222,65 @@ export const resetPassword = async (payload: {
     if (error instanceof AxiosError) {
       throw new Error(
         error.response?.data?.message || "Failed to reset password"
+      );
+    }
+    throw error;
+  }
+};
+
+export const InviteAndAddEmployee = async (payload: any) => {
+  try {
+    const response = await axiosInstance.post(`/employee/add`, payload);
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 422) {
+        throw new Error(error.response?.data?.errors[0].message);
+      }
+
+      throw new Error(error.response?.data?.message || "Failed to invite user");
+    }
+    throw error;
+  }
+};
+
+export const addLineManager = async (payload: any) => {
+  try {
+    const response = await axiosInstance.post(`/tenant/line-manager`, payload);
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 422) {
+        throw new Error(error.response?.data?.errors[0].message);
+      }
+
+      throw new Error(
+        error.response?.data?.message || "Failed to add line manager"
+      );
+    }
+    throw error;
+  }
+};
+export const deleteLineManager = async (payload: any) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/tenant/line-manager/${payload._id}`,
+      payload
+    );
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 422) {
+        throw new Error(error.response?.data?.errors[0].message);
+      }
+      throw new Error(
+        error.response?.data?.message || "Failed to delete line manager"
       );
     }
     throw error;

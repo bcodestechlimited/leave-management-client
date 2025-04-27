@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { tenantLogin, validateTenantID } from "@/api/tenant.api";
 import { toast } from "sonner";
@@ -21,6 +21,8 @@ type LoginFormInputs = {
 export default function TenantLogin() {
   const [isTenantValid, setIsTenantValid] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard/tenant";
 
   const { setTenant } = useTenantActions();
 
@@ -54,7 +56,7 @@ export default function TenantLogin() {
       console.log(tenant);
       setTenant(tenant || null);
       toast.success(`Login successful`);
-      navigate("/dashboard/tenant");
+      navigate(from, { replace: true });
     },
     onError: (error) => {
       console.error("Tenant login error:", error);
@@ -87,7 +89,7 @@ export default function TenantLogin() {
             id="tenantId"
             type="text"
             {...registerTenant("tenantId", {
-              required: "Tenant ID is required",
+              required: "Client ID is required",
             })}
             placeholder="Enter your client ID"
             className="w-full"

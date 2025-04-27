@@ -54,14 +54,46 @@ export const handleFetchLevels = async (search: string) => {
 export const handleFetchEmployees = async (search: string) => {
   try {
     const response = await axiosInstance.get(
-      `/employee?search=${encodeURIComponent(search)}&limit=5`
+      `/employee?search=${encodeURIComponent(
+        search
+      )}&limit=5&accountType=employee`
     );
     const employees = response?.data?.data?.employees;
 
-    return employees.map((employee: Employee) => ({
-      value: employee._id,
-      label: employee.name || employee.email,
-    }));
+    return employees.map((employee: Employee) => {
+      const names = [employee.firstname, employee.middlename, employee.surname]
+        .filter(Boolean) // remove null/undefined middlename
+        .join(" ");
+
+      return {
+        value: employee._id,
+        label: names || employee.email, // fallback to email if no names
+      };
+    });
+  } catch {
+    return [];
+  }
+};
+
+export const handleFetchLineManagers = async (search: string) => {
+  try {
+    const response = await axiosInstance.get(
+      `/employee?search=${encodeURIComponent(
+        search
+      )}&limit=5&accountType=lineManager`
+    );
+    const employees = response?.data?.data?.employees;
+
+    return employees.map((employee: Employee) => {
+      const names = [employee.firstname, employee.middlename, employee.surname]
+        .filter(Boolean)
+        .join(" ");
+
+      return {
+        value: employee._id,
+        label: names || employee.email,
+      };
+    });
   } catch {
     return [];
   }
@@ -117,6 +149,7 @@ export function capitalizeWords(str: string): string {
 }
 
 export const getEmployeeFullName = (employee: Employee) => {
+  if (!employee) return "N/A";
   const { firstname, middlename, surname } = employee;
   return [firstname, middlename, surname].filter(Boolean).join(" ");
 };

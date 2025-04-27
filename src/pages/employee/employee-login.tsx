@@ -2,7 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { employeeSignIn } from "@/api/employee.api";
@@ -18,6 +18,9 @@ export default function EmployeeLogin() {
   const navigate = useNavigate();
   const { setAuthEmployee } = useEmployeeActions();
 
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard/employee";
+
   const {
     register,
     handleSubmit,
@@ -29,7 +32,7 @@ export default function EmployeeLogin() {
     onSuccess: (data) => {
       setAuthEmployee(data.data.employee as Employee);
       toast.success("Login successful!");
-      navigate("/dashboard/employee");
+      navigate(from, { replace: true });
     },
     onError: (error) => {
       toast.error(error.message || "Login failed.");

@@ -1,3 +1,5 @@
+import { Employee } from "./employee.types";
+
 export interface LeaveState {
   leaves: Record<string, any>[];
   leaveTypes: Record<string, any>[];
@@ -25,16 +27,8 @@ export interface ApplyLeaveFormData {
 
 export interface Leave {
   _id: string;
-  employee: {
-    _id: string;
-    name: string;
-    email: string;
-  };
-  lineManager: {
-    _id: string;
-    name: string;
-    email: string;
-  };
+  employee: Employee;
+  lineManager: Employee;
   leaveType: {
     _id: string;
     name: string;

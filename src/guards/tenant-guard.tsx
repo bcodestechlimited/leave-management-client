@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { AuthLoader } from "@/components/loader";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { getAuthTenant } from "@/api/tenant.api";
 import { useTenantActions } from "@/store/useTenantStore";
 
 export default function TenantGuard() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const { setTenant } = useTenantActions();
 
   const {
@@ -23,7 +25,7 @@ export default function TenantGuard() {
   }
 
   if (isError || !tenant) {
-    return <Navigate to="/client/login" replace />;
+    return <Navigate to="/client/login" state={{ from: location }} replace />;
   }
 
   return <Outlet />;

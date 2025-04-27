@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getLeaveDetail } from "@/api/leave.api";
-import { formatDate, getStatusClasses } from "@/lib/utils";
+import { formatDate, getEmployeeFullName, getStatusClasses } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Leave } from "@/types/leave.types";
@@ -91,15 +91,15 @@ export default function ClientLeaveDetail() {
       <div className="flex flex-col gap-1 mt-5">
         <p>
           <strong>Employee Name:</strong>{" "}
-          {leaveRequest?.employee?.name ||
-            leaveRequest?.employee?.email ||
-            "N/A"}
+          {leaveRequest?.employee
+            ? getEmployeeFullName(leaveRequest?.employee)
+            : "N/A"}
         </p>
         <p>
-          <strong>Line Manager:</strong>{" "}
-          {leaveRequest?.lineManager?.name ||
-            leaveRequest?.lineManager?.email ||
-            "N/A"}
+          <strong>Line Manager Name:</strong>{" "}
+          {leaveRequest?.lineManager
+            ? getEmployeeFullName(leaveRequest?.lineManager)
+            : "N/A"}
         </p>
         <p className="capitalize">
           <strong>Leave Type:</strong> {leaveRequest?.leaveType?.name}

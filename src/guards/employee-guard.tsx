@@ -2,10 +2,12 @@ import { getLoggedInEmployee } from "@/api/employee.api";
 import { AuthLoader } from "@/components/loader";
 import { useEmployeeActions, useEmployeeStore } from "@/store/useEmployeeStore";
 import { useQuery } from "@tanstack/react-query";
-import { Navigate, Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 export default function EmployeeGuard() {
   const { setAuthEmployee } = useEmployeeActions();
+  const location = useLocation();
 
   const {
     data: employee,
@@ -17,18 +19,27 @@ export default function EmployeeGuard() {
     retry: false,
   });
 
+  useEffect(() => {
+    if (employee?.tenantId?.color) {
+      document.documentElement.style.setProperty(
+        "--tenant-primary",
+        employee.tenantId.color
+      );
+    }
+  }, [employee]);
+
   if (isLoading) {
     return <AuthLoader isLoading={isLoading} />;
   }
 
   if (isError || !employee) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  document.documentElement.style.setProperty(
-    "--tenant-primary",
-    employee.tenantId?.color || "black"
-  );
+  // document.documentElement.style.setProperty(
+  //   "--tenant-primary",
+  //   employee.tenantId?.color || "black"
+  // );
 
   return <Outlet />;
 }

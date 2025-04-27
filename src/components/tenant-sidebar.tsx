@@ -11,6 +11,7 @@ import {
   FileStack,
   UserPen,
   FilePenLine,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -33,6 +34,11 @@ const routes = [
         icon: <Mail className="w-4 h-4" />,
       },
     ],
+  },
+  {
+    name: "Line Managers",
+    path: "/dashboard/tenant/line-manager",
+    icon: <Users className="w-5 h-5" />,
   },
   {
     name: "Leave",

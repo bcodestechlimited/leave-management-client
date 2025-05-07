@@ -105,7 +105,11 @@ export const updateTenantProfile = async (payload: UpdateTenant) => {
   console.log(payload);
 
   try {
-    const response = await axiosInstance.put(`/tenant/auth`, payload);
+    const response = await axiosInstance.put(`/tenant/auth`, payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data?.data;
   } catch (error) {
     if (error instanceof AxiosError) {

@@ -59,6 +59,8 @@ export default function TenantProfileUpdate() {
       logo: logo || null,
     };
 
+    console.log({ payload });
+
     mutate(payload);
   };
 

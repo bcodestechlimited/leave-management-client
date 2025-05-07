@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import axiosInstance from "../lib/axios.config";
 import { UpdateEmployee } from "@/types/employee.types";
 import { Params } from "@/types/params.types";
+import { useEmployeeStore } from "@/store/useEmployeeStore";
 
 export const getAllEmployees = async (params: Params) => {
   try {
@@ -174,7 +175,13 @@ export const updateEmployeeProfileAPI = async (
         "Content-Type": "multipart/form-data",
       },
     });
+
     const { employee, leaveBalances } = response?.data?.data;
+    console.log({ employee, leaveBalances });
+    useEmployeeStore.getState().actions.setAuthEmployee({
+      ...employee,
+      leaveBalances,
+    });
     return { employee, leaveBalances };
   } catch (error) {
     if (error instanceof AxiosError) {

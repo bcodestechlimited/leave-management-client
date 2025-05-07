@@ -108,10 +108,7 @@ export default function LineManagers() {
       header: "Gender",
       render: (row: any) => row.gender || "N/A",
     },
-    {
-      header: "Level",
-      render: (row: any) => (row?.levelId ? row?.levelId?.name : "N/A"),
-    },
+
     {
       header: "Joined",
       render: (row: any) => formatDate(row?.createdAt) || "N/A",

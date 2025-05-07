@@ -28,6 +28,7 @@ export interface FormInputs {
 export default function EmployeeProfileUpdate() {
   const { employee } = useEmployeeStore();
   const { setAuthEmployee } = useEmployeeActions();
+
   const navigate = useNavigate();
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState<boolean>(false);
@@ -66,6 +67,8 @@ export default function EmployeeProfileUpdate() {
     mutationFn: updateEmployeeProfileAPI,
     onSuccess: ({ employee, leaveBalances }) => {
       setAuthEmployee({ ...employee, leaveBalances });
+      // getAuthEmployee();
+      toast.success("Profile updated successfully");
       navigate("/dashboard/employee/profile");
     },
     onError: (error) => {
@@ -126,73 +129,83 @@ export default function EmployeeProfileUpdate() {
           )}
         </div>
 
-        <div className="mb-4">
-          <Label className="block text-sm font-medium mb-1">Line Manager</Label>
-          <div className="flex items-center gap-2">
-            <SearchableDropdown
-              searchInputPlaceholder="Search for a line manager"
-              placeholder={
-                employee?.lineManager?.name ||
-                employee?.lineManager?.email ||
-                "Search for a line manager"
-              }
-              fetchOptions={handleFetchLineManagers}
-              onChange={(value) => {
-                console.log("Selected Level ID:", value);
-                setValue("lineManager", value);
-                clearErrors(["lineManager"]);
-              }}
+        {employee?.accountType === "employee" && (
+          <div className="mb-4">
+            <Label className="block text-sm font-medium mb-1">
+              Line Manager
+            </Label>
+            <div className="flex items-center gap-2">
+              <SearchableDropdown
+                searchInputPlaceholder="Search for a line manager"
+                placeholder={
+                  employee?.lineManager?.name ||
+                  employee?.lineManager?.email ||
+                  "Search for a line manager"
+                }
+                fetchOptions={handleFetchLineManagers}
+                onChange={(value) => {
+                  console.log("Selected Level ID:", value);
+                  setValue("lineManager", value);
+                  clearErrors(["lineManager"]);
+                }}
+              />
+              <PlusCircle
+                className="w-5 h-5 cursor-pointer"
+                onClick={() => {
+                  openInviteModal();
+                  setAccountType("lineManager");
+                }}
+              />
+            </div>
+            <Input
+              type="text"
+              {...register("lineManager")}
+              className="hidden"
             />
-            <PlusCircle
-              className="w-5 h-5 cursor-pointer"
-              onClick={() => {
-                openInviteModal();
-                setAccountType("lineManager");
-              }}
-            />
+
+            {errors.lineManager && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.lineManager?.message}
+              </p>
+            )}
           </div>
-          <Input type="text" {...register("lineManager")} className="hidden" />
+        )}
 
-          {errors.lineManager && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.lineManager?.message}
-            </p>
-          )}
-        </div>
+        {employee?.accountType === "employee" && (
+          <div className="mb-4">
+            <Label className="block text-sm font-medium mb-1">Reliever</Label>
+            <div className="flex items-center gap-2">
+              <SearchableDropdown
+                searchInputPlaceholder="Search for a reliever"
+                placeholder={
+                  employee?.reliever?.name ||
+                  employee?.reliever?.email ||
+                  "Search for a reliever"
+                }
+                fetchOptions={handleFetchEmployees}
+                onChange={(value) => {
+                  console.log("Selected Level ID:", value);
+                  setValue("reliever", value);
+                  clearErrors(["reliever"]);
+                }}
+              />
+              <PlusCircle
+                className="w-5 h-5 cursor-pointer"
+                onClick={() => {
+                  openInviteModal();
+                  setAccountType("employee");
+                }}
+              />
+            </div>
+            <Input type="text" {...register("reliever")} className="hidden" />
 
-        <div className="mb-4">
-          <Label className="block text-sm font-medium mb-1">Reliever</Label>
-          <div className="flex items-center gap-2">
-            <SearchableDropdown
-              searchInputPlaceholder="Search for a reliever"
-              placeholder={
-                employee?.reliever?.name ||
-                employee?.reliever?.email ||
-                "Search for a reliever"
-              }
-              fetchOptions={handleFetchEmployees}
-              onChange={(value) => {
-                console.log("Selected Level ID:", value);
-                setValue("reliever", value);
-                clearErrors(["reliever"]);
-              }}
-            />
-            <PlusCircle
-              className="w-5 h-5 cursor-pointer"
-              onClick={() => {
-                openInviteModal();
-                setAccountType("employee");
-              }}
-            />
+            {errors.reliever && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.reliever?.message}
+              </p>
+            )}
           </div>
-          <Input type="text" {...register("reliever")} className="hidden" />
-
-          {errors.reliever && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.reliever?.message}
-            </p>
-          )}
-        </div>
+        )}
 
         {/* <div className="mb-4">
           <FileUpload

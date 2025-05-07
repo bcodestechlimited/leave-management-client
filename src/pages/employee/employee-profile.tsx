@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useEmployeeActions, useEmployeeStore } from "@/store/useEmployeeStore";
-import { cn, getEmployeeFullName } from "@/lib/utils";
+import { cn, getEmployeeFullNameWithEmail } from "@/lib/utils";
 import { updateEmployeeProfileAPI } from "@/api/employee.api";
 import { toast } from "sonner";
 import { UserCheck, UserX } from "lucide-react";
@@ -108,66 +108,68 @@ export default function EmployeeProfile() {
           <p className="text-gray-600">
             <span className="font-semibold">Email: </span> {employee?.email}
           </p>
-          <p className="text-gray-600">
-            <span className="font-semibold">Job Role: </span>
-            {employee?.jobRole ?? "N/A"}
-          </p>
-          <p className="text-gray-600">
-            <span className="font-semibold">Level: </span>
-            <span className="capitalize">
-              {employee?.levelId?.name ?? "N/A"}
-            </span>
-          </p>
-          <p className="text-gray-600 flex gap-2 items-center">
-            <span className="font-semibold">Line Manager: </span>
-            {employee?.lineManager
-              ? getEmployeeFullName(employee?.lineManager)
-              : "N/A"}
-            {/* {(employee?.lineManager?.name || employee?.lineManager?.email) ??
+          {employee?.accountType === "employee" && (
+            <div className="flex flex-col gap-2">
+              <p className="text-gray-600">
+                <span className="font-semibold">Level: </span>
+                <span className="capitalize">
+                  {employee?.levelId?.name ?? "N/A"}
+                </span>
+              </p>
+              <p className="text-gray-600 flex gap-2 items-center">
+                <span className="font-semibold">Line Manager: </span>
+                {employee?.lineManager
+                  ? getEmployeeFullNameWithEmail(employee?.lineManager)
+                  : "N/A"}
+                {/* {(employee?.lineManager?.name || employee?.lineManager?.email) ??
               "N/A"}{" "} */}
-            {employee?.lineManager ? (
-              employee?.lineManager?.isOnLeave ? (
-                <UserX className="text-red-500" />
-              ) : (
-                <UserCheck className="text-green-500" />
-              )
-            ) : null}
-          </p>
-          <p className="text-gray-600 flex gap-2 items-center">
-            <span className="font-semibold">Reliever: </span>
-            {employee?.reliever
-              ? getEmployeeFullName(employee?.reliever)
-              : "N/A"}{" "}
-            {employee?.reliever ? (
-              employee?.reliever?.isOnLeave ? (
-                <UserX className="text-red-500" />
-              ) : (
-                <UserCheck className="text-green-500" />
-              )
-            ) : null}
-          </p>
+                {employee?.lineManager ? (
+                  employee?.lineManager?.isOnLeave ? (
+                    <UserX className="text-red-500" />
+                  ) : (
+                    <UserCheck className="text-green-500" />
+                  )
+                ) : null}
+              </p>
+              <p className="text-gray-600 flex gap-2 items-center">
+                <span className="font-semibold">Reliever: </span>
+                {employee?.reliever
+                  ? getEmployeeFullNameWithEmail(employee?.reliever)
+                  : "N/A"}{" "}
+                {employee?.reliever ? (
+                  employee?.reliever?.isOnLeave ? (
+                    <UserX className="text-red-500" />
+                  ) : (
+                    <UserCheck className="text-green-500" />
+                  )
+                ) : null}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Leave Balance Section */}
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-4">Leave Balances</h2>
-          <ul>
-            {employee?.leaveBalances && employee?.leaveBalances.length > 0 ? (
-              employee?.leaveBalances.map((balance: any, index: number) => (
-                <li key={index} className="mb-4">
-                  <div className="flex justify-between">
-                    <span className="font-semibold capitalize text-gray-600">
-                      {balance.leaveTypeDetails?.name ?? "N/A"}
-                    </span>
-                    <span>{balance.balance ?? 0} days</span>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <p>No leave balances available.</p>
-            )}
-          </ul>
-        </div>
+        {employee?.accountType === "employee" && (
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold mb-4">Leave Balances</h2>
+            <ul>
+              {employee?.leaveBalances && employee?.leaveBalances.length > 0 ? (
+                employee?.leaveBalances.map((balance: any, index: number) => (
+                  <li key={index} className="mb-4">
+                    <div className="flex justify-between">
+                      <span className="font-semibold capitalize text-gray-600">
+                        {balance.leaveTypeDetails?.name ?? "N/A"}
+                      </span>
+                      <span>{balance.balance ?? 0} days</span>
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <p>No leave balances available.</p>
+              )}
+            </ul>
+          </div>
+        )}
 
         {/* Documents Section */}
         {employee && employee?.documents?.length > 0 && (

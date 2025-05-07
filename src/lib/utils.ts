@@ -148,6 +148,14 @@ export function capitalizeWords(str: string): string {
     .join(" ");
 }
 
+export const getEmployeeFullNameWithEmail = (employee: Employee) => {
+  if (!employee) return "N/A";
+  const { firstname, middlename, surname, email } = employee;
+  return (
+    [firstname, middlename, surname].filter(Boolean).join(" ") + " - " + email
+  );
+};
+
 export const getEmployeeFullName = (employee: Employee) => {
   if (!employee) return "N/A";
   const { firstname, middlename, surname } = employee;

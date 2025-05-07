@@ -24,14 +24,12 @@ export default function EmployeeLeaveRequests() {
 
   const columns = [
     {
-      header: "Name",
-      render: (row: any) => row.employee?.name || row.employee?.email || "N/A",
+      header: "Employee",
+      render: (row: any) => row?.employee?.firstname || "N/A",
     },
     {
       header: "Line Manager",
-      accessor: "lineManager.name",
-      render: (row: any) =>
-        row.lineManager?.name || row.lineManager?.email || "N/A",
+      render: (row: any) => row?.lineManager?.firstname || "N/A",
     },
     {
       header: "Start Date",
@@ -103,7 +101,7 @@ export default function EmployeeLeaveRequests() {
         columns={columns}
         data={data?.leaveRequests || []}
         isLoading={isLoading}
-        noDataMessage="No leaves found."
+        noDataMessage="No leave requests found."
         pagination={data?.pagination}
       />
 

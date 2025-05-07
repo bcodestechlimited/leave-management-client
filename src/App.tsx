@@ -223,7 +223,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Toaster position="top-right" />
       <RouterProvider router={router} />
-      <ReactQueryDevtools initialIsOpen={false} />
+      {process.env.NODE_ENV === "development" && (
+        <ReactQueryDevtools initialIsOpen={false} />
+      )}
     </QueryClientProvider>
   );
 }

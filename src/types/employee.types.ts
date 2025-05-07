@@ -12,6 +12,7 @@ export interface Employee {
   jobRole: string;
   isOnLeave: boolean;
   isAdmin: boolean;
+  accountType: "lineManager" | "employee";
   tenantId: {
     name: string;
     logo: string;

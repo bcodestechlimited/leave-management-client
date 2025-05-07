@@ -27,30 +27,30 @@ interface Route {
   submenu?: Submenu[];
 }
 
-const routes: Route[] = [
-  {
-    name: "Dashboard",
-    path: "/dashboard/employee",
-    icon: <LayoutDashboardIcon className="w-5 h-5" />,
-  },
-  {
-    name: "Leave",
-    path: "/dashboard/employee/leave",
-    icon: <FileStack className="w-5 h-5" />,
-    submenu: [
-      {
-        name: "Leave Request",
-        path: "/dashboard/employee/leave/leave-request",
-        icon: <FilePenLine className="w-4 h-4" />,
-      },
-    ],
-  },
-  {
-    name: "Profile",
-    path: "/dashboard/employee/profile",
-    icon: <User className="w-5 h-5" />,
-  },
-];
+// const routes: Route[] = [
+//   {
+//     name: "Dashboard",
+//     path: "/dashboard/employee",
+//     icon: <LayoutDashboardIcon className="w-5 h-5" />,
+//   },
+//   {
+//     name: "Leave",
+//     path: "/dashboard/employee/leave",
+//     icon: <FileStack className="w-5 h-5" />,
+//     submenu: [
+//       {
+//         name: "Leave Request",
+//         path: "/dashboard/employee/leave/leave-request",
+//         icon: <FilePenLine className="w-4 h-4" />,
+//       },
+//     ],
+//   },
+//   {
+//     name: "Profile",
+//     path: "/dashboard/employee/profile",
+//     icon: <User className="w-5 h-5" />,
+//   },
+// ];
 
 const adminRoutes: Route[] = [
   {
@@ -87,6 +87,30 @@ export default function EmployeeSidebar() {
     navigate(`/login`);
     toast.success("Logged out successfully");
   };
+
+  const routes: Route[] = [
+    {
+      name: "Dashboard",
+      path: "/dashboard/employee",
+      icon: <LayoutDashboardIcon className="w-5 h-5" />,
+    },
+    employee?.accountType === "employee"
+      ? {
+          name: "Leave",
+          path: "/dashboard/employee/leave",
+          icon: <FileStack className="w-5 h-5" />,
+        }
+      : {
+          name: "Leave Request",
+          path: "/dashboard/employee/leave/leave-request",
+          icon: <FilePenLine className="w-5 h-5" />,
+        },
+    {
+      name: "Profile",
+      path: "/dashboard/employee/profile",
+      icon: <User className="w-5 h-5" />,
+    },
+  ];
 
   return (
     <aside

@@ -25,13 +25,12 @@ export default function EmployeeLeave() {
 
   const columns = [
     {
-      header: "Name",
-      render: (row: any) => row.employee?.name || "N/A",
+      header: "Employee",
+      render: (row: any) => row?.employee?.firstname || "N/A",
     },
     {
       header: "Line Manager",
-      accessor: "lineManager.name",
-      render: (row: any) => row.lineManager?.name || "N/A",
+      render: (row: any) => row?.lineManager?.firstname || "N/A",
     },
     {
       header: "Start Date",

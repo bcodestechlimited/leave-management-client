@@ -44,7 +44,7 @@ export default function TenantLeave() {
       link.href = url;
       link.setAttribute(
         "download",
-        `leave-report-${format(startDate as Date, "MMMM")}.pdf`
+        `leave-report-${format(startDate as Date, "MMMM")}.xlsx`
       ); // Adjust name/extension as needed
       document.body.appendChild(link);
       link.click();

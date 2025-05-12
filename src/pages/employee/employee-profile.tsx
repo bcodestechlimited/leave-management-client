@@ -116,6 +116,14 @@ export default function EmployeeProfile() {
                   {employee?.levelId?.name ?? "N/A"}
                 </span>
               </p>
+              <p className="text-gray-600">
+                <span className="font-semibold">Job Role: </span>
+                <span className="capitalize">{employee?.jobRole ?? "N/A"}</span>
+              </p>
+              <p className="text-gray-600">
+                <span className="font-semibold">Branch: </span>
+                <span className="capitalize">{employee?.branch ?? "N/A"}</span>
+              </p>
               <p className="text-gray-600 flex gap-2 items-center">
                 <span className="font-semibold">Line Manager: </span>
                 {employee?.lineManager

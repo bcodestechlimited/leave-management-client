@@ -10,6 +10,7 @@ export interface Employee {
   email: string;
   avatar: string;
   jobRole: string;
+  branch: string;
   isOnLeave: boolean;
   isAdmin: boolean;
   accountType: "lineManager" | "employee";

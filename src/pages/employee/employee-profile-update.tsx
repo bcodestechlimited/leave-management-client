@@ -22,6 +22,8 @@ export interface FormInputs {
   lineManager: string | null;
   reliever: string | null;
   file: FileList | null;
+  jobRole: string | null;
+  branch: string | null;
   avatar: FileList | null;
 }
 
@@ -58,6 +60,8 @@ export default function EmployeeProfileUpdate() {
       email: employee?.email,
       lineManager: employee?.lineManager?._id || null,
       reliever: employee?.reliever?._id || null,
+      jobRole: employee?.jobRole || null,
+      branch: employee?.branch || null,
       avatar: null,
       file: null,
     },
@@ -128,6 +132,29 @@ export default function EmployeeProfileUpdate() {
             </p>
           )}
         </div>
+
+        {employee?.accountType === "employee" && (
+          <>
+            <div>
+              <Label>Job Role</Label>
+              <Input type="text" {...register("jobRole")} className="w-full" />
+              {errors.jobRole && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.jobRole.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <Label>Branch</Label>
+              <Input type="text" {...register("branch")} className="w-full" />
+              {errors.branch && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.branch.message}
+                </p>
+              )}
+            </div>
+          </>
+        )}
 
         {employee?.accountType === "employee" && (
           <div className="mb-4">

@@ -185,3 +185,24 @@ export const getLeaveRequestAnalytics = async (params: { year?: string }) => {
     throw error;
   }
 };
+
+export const getMonthlyLeaveReport = async (params: {
+  startDate?: string;
+  endDate?: string;
+}) => {
+  try {
+    const response = await axiosInstance.get<Blob>(`/tenant/leave-report`, {
+      params,
+      responseType: "blob",
+    });
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message ||
+          "Failed to fetch analytics for leave requests"
+      );
+    }
+    throw error;
+  }
+};

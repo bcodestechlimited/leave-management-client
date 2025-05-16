@@ -13,12 +13,14 @@ import { useEmployeeActions, useEmployeeStore } from "@/store/useEmployeeStore";
 import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import InviteModal from "./modals/employee-invite";
+import { CustomDropdown } from "@/components/custom-dropdown";
 
 export interface FormInputs {
   firstname: string | null;
   middlename: string | null;
   surname: string | null;
   email: string;
+  gender: string;
   lineManager: string | null;
   reliever: string | null;
   file: FileList | null;
@@ -51,6 +53,7 @@ export default function EmployeeProfileUpdate() {
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
     clearErrors,
   } = useForm<FormInputs>({
     defaultValues: {
@@ -58,6 +61,7 @@ export default function EmployeeProfileUpdate() {
       middlename: employee?.middlename || null,
       surname: employee?.surname || null,
       email: employee?.email,
+      gender: employee?.gender || "male",
       lineManager: employee?.lineManager?._id || null,
       reliever: employee?.reliever?._id || null,
       jobRole: employee?.jobRole || null,
@@ -132,6 +136,23 @@ export default function EmployeeProfileUpdate() {
             </p>
           )}
         </div>
+
+        {employee?.accountType === "employee" && (
+          <CustomDropdown
+            label="Gender"
+            placeholder="Select gender"
+            value={watch("gender") ?? ""}
+            onChange={(value) => {
+              setValue("gender", value as "male" | "female");
+              clearErrors("gender");
+            }}
+            options={[
+              { label: "Male", value: "male" },
+              { label: "Female", value: "female" },
+            ]}
+            error={errors.gender?.message}
+          />
+        )}
 
         {employee?.accountType === "employee" && (
           <>

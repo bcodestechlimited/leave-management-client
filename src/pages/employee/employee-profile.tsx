@@ -25,8 +25,6 @@ export default function EmployeeProfile() {
     link.click();
   };
 
-  console.log(employee);
-
   const { mutate, isPending } = useMutation({
     mutationFn: updateEmployeeProfileAPI,
     onSuccess: () => {
@@ -89,10 +87,6 @@ export default function EmployeeProfile() {
         <div className="mb-4 flex flex-col gap-3">
           <img className="w-44 h-44 rounded-lg" src={employee?.avatar} alt="" />
           <h2 className="text-xl font-semibold">Personal Information</h2>
-          {/* <p className="text-gray-600">
-            <span className="font-semibold">Name: </span>
-            {employee?.name ?? "N/A"}
-          </p> */}
           <p className="text-gray-600">
             <span className="font-semibold">First Name: </span>
             {employee?.firstname ?? "N/A"}
@@ -102,7 +96,7 @@ export default function EmployeeProfile() {
             {employee?.middlename ?? "N/A"}
           </p>
           <p className="text-gray-600">
-            <span className="font-semibold">Last Name: </span>
+            <span className="font-semibold">SurName: </span>
             {employee?.surname ?? "N/A"}
           </p>
           <p className="text-gray-600">
@@ -110,6 +104,10 @@ export default function EmployeeProfile() {
           </p>
           {employee?.accountType === "employee" && (
             <div className="flex flex-col gap-2">
+              <p className="text-gray-600">
+                <span className="font-semibold">Gender: </span>
+                <span className="capitalize">{employee?.gender ?? "N/A"}</span>
+              </p>
               <p className="text-gray-600">
                 <span className="font-semibold">Level: </span>
                 <span className="capitalize">

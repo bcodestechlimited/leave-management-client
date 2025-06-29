@@ -21,6 +21,8 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { applyForLeave } from "@/api/leave.api";
 import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
+import FileUpload from "@/components/file-upload";
 
 interface ApplyLeaveModalProps {
   isOpen: boolean;
@@ -33,6 +35,7 @@ interface ApplyLeaveFormData {
   resumptionDate: Date | string;
   duration: number;
   reason: string;
+  document?: FileList;
 }
 
 export default function ApplyLeaveModal({
@@ -223,9 +226,9 @@ export default function ApplyLeaveModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <Label className="block text-sm font-medium mb-1">
               Resumption Date
-            </label>
+            </Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -264,6 +267,24 @@ export default function ApplyLeaveModal({
               </p>
             )}
           </div>
+
+          {/* <div className="mb-4">
+            <Label className="block text-sm font-medium mb-1">Document</Label>
+            <Input
+              type="file"
+              accept="image/*, application/pdf"
+              {...register("document", {
+                required: "Resumption date is required",
+              })}
+              className="block w-full border rounded-lg p-2"
+            />
+            {errors.document && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.document.message}
+              </p>
+            )}
+          </div> */}
+
           <div>
             <label className="block text-sm font-medium mb-1">Reason</label>
             <Textarea
@@ -277,6 +298,7 @@ export default function ApplyLeaveModal({
               </p>
             )}
           </div>
+
           <div className="flex justify-end gap-2">
             <Button
               type="button"

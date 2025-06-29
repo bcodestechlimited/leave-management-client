@@ -1,6 +1,7 @@
 import React from "react";
 import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 import { toast } from "sonner";
+import { Input } from "./ui/input";
 
 interface FileUploadProps {
   label: string;
@@ -37,7 +38,7 @@ const FileUpload = ({
   return (
     <div className="mb-4">
       <label className="block font-semibold mb-2">{label}</label>
-      <input
+      <Input
         type="file"
         accept={accept}
         {...register}

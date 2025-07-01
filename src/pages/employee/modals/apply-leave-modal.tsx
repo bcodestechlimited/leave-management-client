@@ -22,7 +22,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { applyForLeave } from "@/api/leave.api";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
-import FileUpload from "@/components/file-upload";
 
 interface ApplyLeaveModalProps {
   isOpen: boolean;
@@ -60,6 +59,7 @@ export default function ApplyLeaveModal({
 
   const [startDate, setStartDate] = useState<Date | string>(new Date());
   const [resumptionDate, setResumptionDate] = useState<Date | string>("");
+  const [isSickLeave, setIsSickLeave] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -115,7 +115,11 @@ export default function ApplyLeaveModal({
       ...data,
       startDate: start.toISOString().split("T")[0].toString(),
       resumptionDate: end.toISOString().split("T")[0].toString(),
+      document: data.document?.[0],
     };
+
+    console.log({ updatedData });
+
     mutate(updatedData);
   };
 
@@ -131,10 +135,15 @@ export default function ApplyLeaveModal({
             <SearchableDropdown
               placeholder="Search and select a leave type"
               fetchOptions={handleFetchBalances}
-              onChange={(value) => {
+              onChange={({ value, label }) => {
                 console.log("Selected Level ID:", value);
                 setValue("leaveTypeId", value);
                 clearErrors(["leaveTypeId"]);
+                if (label.toLowerCase().includes("sick")) {
+                  setIsSickLeave(true);
+                } else {
+                  setIsSickLeave(false);
+                }
               }}
             />
             <Input
@@ -268,22 +277,24 @@ export default function ApplyLeaveModal({
             )}
           </div>
 
-          {/* <div className="mb-4">
-            <Label className="block text-sm font-medium mb-1">Document</Label>
-            <Input
-              type="file"
-              accept="image/*, application/pdf"
-              {...register("document", {
-                required: "Resumption date is required",
-              })}
-              className="block w-full border rounded-lg p-2"
-            />
-            {errors.document && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.document.message}
-              </p>
-            )}
-          </div> */}
+          {isSickLeave && (
+            <div className="mb-4">
+              <Label className="block text-sm font-medium mb-1">Document</Label>
+              <Input
+                type="file"
+                accept="image/*, application/pdf"
+                {...register("document", {
+                  required: "Document is required for sick leave",
+                })}
+                className="block w-full border rounded-lg p-2"
+              />
+              {errors.document && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.document.message}
+                </p>
+              )}
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium mb-1">Reason</label>

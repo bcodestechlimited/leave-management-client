@@ -191,7 +191,7 @@ export default function EmployeeProfileUpdate() {
                   "Search for a line manager"
                 }
                 fetchOptions={handleFetchLineManagers}
-                onChange={(value) => {
+                onChange={({value}) => {
                   console.log("Selected Level ID:", value);
                   setValue("lineManager", value);
                   clearErrors(["lineManager"]);
@@ -231,7 +231,7 @@ export default function EmployeeProfileUpdate() {
                   "Search for a reliever"
                 }
                 fetchOptions={handleFetchEmployees}
-                onChange={(value) => {
+                onChange={({value}) => {
                   console.log("Selected Level ID:", value);
                   setValue("reliever", value);
                   clearErrors(["reliever"]);

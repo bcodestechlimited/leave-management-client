@@ -58,7 +58,11 @@ export const getEmployeeLeaves = async (params: Params) => {
 
 export const applyForLeave = async (data: ApplyLeaveFormData) => {
   try {
-    const response = await axiosInstance.post("/leave/leave-request", data);
+    const response = await axiosInstance.post("/leave/leave-request", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {

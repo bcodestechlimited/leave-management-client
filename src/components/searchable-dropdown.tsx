@@ -25,7 +25,7 @@ interface SearchableDropdownProps {
   searchInputPlaceholder?: string;
   placeholder?: string;
   fetchOptions: (search: string) => Promise<DropdownOption[]>; // Fetch options dynamically
-  onChange?: (value: string) => void;
+  onChange?: (option: DropdownOption) => void;
   error?: string;
 }
 
@@ -111,7 +111,10 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                       onSelect={(currentValue) => {
                         setValue(currentValue === value ? value : currentValue);
                         if (onChange) {
-                          onChange(option.value);
+                          onChange({
+                            value: option.value,
+                            label: option.label,
+                          });
                         }
                         setOpen(false);
                       }}

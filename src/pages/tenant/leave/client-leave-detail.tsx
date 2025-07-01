@@ -118,6 +118,22 @@ export default function ClientLeaveDetail() {
         <p>
           <strong>Approval Count:</strong> {leaveRequest?.approvalCount}
         </p>
+
+        {leaveRequest?.document &&
+          leaveRequest?.leaveType?.name?.toLowerCase().includes("sick") && (
+            <p>
+              <strong>Document: </strong>
+              <a
+                href={leaveRequest?.document}
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary underline"
+              >
+                Click here to view
+              </a>
+            </p>
+          )}
+
         <p className="capitalize">
           <strong>Status:</strong>
           <span

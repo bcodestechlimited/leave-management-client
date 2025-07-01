@@ -135,7 +135,7 @@ export default function EditEmployeeModal({
               searchInputPlaceholder="Search for a level"
               placeholder={employee?.levelId?.name || "Select a Level"}
               fetchOptions={handleFetchLevels}
-              onChange={(value) => {
+              onChange={({value}) => {
                 setValue("levelId", value);
                 clearErrors("levelId");
               }}

@@ -40,6 +40,7 @@ export interface Leave {
   resumptionDate: string;
   reason: string;
   rejectionReason: string;
+  document?: string;
 }
 
 export interface EmployeeLeaveBalance {

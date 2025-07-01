@@ -89,7 +89,7 @@ export default function AddLeaveTypeModal({
           <SearchableDropdown
             placeholder="Search and select a Level"
             fetchOptions={handleFetchLevels}
-            onChange={(value) => {
+            onChange={({value}) => {
               console.log("Selected Level ID:", value);
               setValue("levelId", value);
               clearErrors(["levelId"]);

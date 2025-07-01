@@ -104,7 +104,7 @@ export default function EditLeaveTypeModal({
             searchInputPlaceholder="Search for a level"
             placeholder={leaveType?.levelId?.name || "Select a Level"}
             fetchOptions={handleFetchLevels}
-            onChange={(value) => {
+            onChange={({ value }) => {
               console.log("Selected Level ID:", value);
               setValue("levelId", value);
               clearErrors(["levelId"]);

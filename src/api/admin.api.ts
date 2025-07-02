@@ -35,3 +35,26 @@ export const addTenant = async (tenantData: CreateTenant) => {
     throw error;
   }
 };
+
+export const getLeaveRequestAnalyticsForAdmin = async (params: {
+  year?: string;
+  tenantId?: string;
+}) => {
+  try {
+    const response = await axiosInstance.get(`/admin/leave/analytics`, {
+      params,
+    });
+    const data = response?.data?.data;
+    const analytics = response?.data?.data?.analytics;
+    return analytics;
+    return data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message ||
+          "Failed to fetch analytics for leave requests"
+      );
+    }
+    throw error;
+  }
+};

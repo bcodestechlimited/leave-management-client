@@ -38,6 +38,7 @@ import EmployeeLeaveDetail from "./pages/employee/employee-leave-detail";
 import TenantProfileUpdate from "./pages/tenant/tenant-profile-update";
 import ClientLeaveDetail from "./pages/tenant/leave/client-leave-detail";
 import LineManagers from "./pages/tenant/line-manager";
+import AdminDashboard from "./pages/admin/admin-dashboard";
 
 const queryClient = new QueryClient();
 
@@ -203,7 +204,7 @@ function App() {
           children: [
             {
               path: "",
-              element: <div>Admin Home</div>,
+              element: <AdminDashboard />,
             },
             {
               path: "tenants",

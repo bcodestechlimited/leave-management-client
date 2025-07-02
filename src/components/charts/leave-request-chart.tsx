@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import {
@@ -22,9 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useQuery } from "@tanstack/react-query";
-import { getLeaveRequestAnalytics } from "@/api/leave.api";
-import { AuthLoader } from "../loader";
 
 const chartConfig = {
   totalLeaveRequests: {
@@ -60,25 +56,17 @@ const months = [
   "December",
 ];
 
-export default function LeaveRequestsChart() {
-  const [selectedYear, setSelectedYear] = useState("2025");
+interface ChartData {
+  selectedYear: string;
+  setSelectedYear: (year: string) => void;
+  chartData: any[];
+}
 
-  const {
-    data: chartData1,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryFn: () => getLeaveRequestAnalytics({ year: selectedYear }),
-    queryKey: ["lineManagerLeaves", selectedYear],
-  });
-
-  if (isLoading) return <AuthLoader isLoading={isLoading} />;
-
-  if (isError)
-    return (
-      <div className="text-center py-4 text-red-500">Failed to load data</div>
-    );
-
+export default function LeaveRequestsChart({
+  selectedYear,
+  setSelectedYear,
+  chartData,
+}: ChartData) {
   // Get current month index (0-based)
   const currentMonthIndex = new Date().getMonth();
 
@@ -89,10 +77,10 @@ export default function LeaveRequestsChart() {
 
   // Get leave request data for the current and previous months
   const lastMonthData =
-    chartData1?.find((d: any) => d.month === lastMonthName)
+    chartData?.find((d: any) => d.month === lastMonthName)
       ?.totalLeaveRequests || 0;
   const prevMonthData =
-    chartData1?.find((d: any) => d.month === prevMonthName)
+    chartData?.find((d: any) => d.month === prevMonthName)
       ?.totalLeaveRequests || 0;
 
   // Calculate percentage change
@@ -134,7 +122,7 @@ export default function LeaveRequestsChart() {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="min-w-80 w-full h-64">
-          <BarChart accessibilityLayer data={chartData1}>
+          <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="month"

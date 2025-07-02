@@ -190,6 +190,7 @@ export const getLeaveRequestAnalytics = async (params: { year?: string }) => {
   }
 };
 
+
 export const getMonthlyLeaveReport = async (params: {
   startDate?: string;
   endDate?: string;

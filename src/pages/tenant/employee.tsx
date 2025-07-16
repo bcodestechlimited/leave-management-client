@@ -20,9 +20,8 @@ import type { Employee } from "@/types/employee.types";
 
 export default function Employee() {
   const [searchParams] = useSearchParams();
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false); 
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [employeeToEdit, setEmployeeToEdit] = useState<Employee | null>(null);
-  
 
   const page = parseInt(searchParams.get("page") || "1", 10);
   const search = searchParams.get("search") || "";
@@ -80,7 +79,9 @@ export default function Employee() {
     },
     {
       header: "Gender",
-      render: (row: any) => row.gender || "N/A",
+      render: (row: any) => (
+        <span className="capitalize">{row?.gender || "N/A"}</span>
+      ),
     },
     {
       header: "Level",

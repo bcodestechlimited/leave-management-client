@@ -12,32 +12,23 @@ import { handleFetchLevels } from "@/lib/utils";
 import { updateEmployeeDetailsByTenant } from "@/api/tenant.api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { Employee } from "@/types/employee.types";
+import { CustomDropdown } from "@/components/custom-dropdown";
 
 interface EditEmployeeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  employee: {
-    _id: string;
-    name: string;
-    firstname: string;
-    middlename: string;
-    surname: string;
-    email: string;
-    jobRole: string;
-    isAdmin: boolean;
-    levelId: {
-      _id: string;
-      name: string;
-    };
-  };
+  employee: Partial<Employee>;
 }
 
 interface FormValues {
   _id: string;
+  staffId: string;
   name: string;
   firstname: string;
   middlename: string;
   surname: string;
+  gender: string;
   email: string;
   jobRole: string;
   levelId: string;
@@ -55,16 +46,19 @@ export default function EditEmployeeModal({
     register,
     handleSubmit,
     formState: { errors },
+    watch,
     setValue,
     clearErrors,
   } = useForm<FormValues>({
     defaultValues: {
       _id: employee._id,
-      name: employee.name,
+      staffId: employee.staffId,
       firstname: employee.firstname,
       middlename: employee.middlename,
       surname: employee.surname,
       email: employee.email,
+      gender: employee.gender || "male",
+      jobRole: employee.jobRole,
       isAdmin: employee.isAdmin,
       levelId: employee.levelId?._id || "",
     },
@@ -87,6 +81,8 @@ export default function EditEmployeeModal({
     await editMutation.mutateAsync(data);
   };
 
+  console.log({ employee });
+
   return (
     <Dialog
       open={isOpen}
@@ -102,31 +98,45 @@ export default function EditEmployeeModal({
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           {/* Display basic disabled fields */}
           <div>
+            <label className="block text-sm font-medium mb-1">Staff Id</label>
+            <Input type="text" {...register("staffId")} />
+          </div>
+          <div>
             <label className="block text-sm font-medium mb-1">First Name</label>
-            <Input disabled type="text" {...register("firstname")} />
+            <Input type="text" {...register("firstname")} />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">
               Middle Name
             </label>
-            <Input disabled type="text" {...register("middlename")} />
+            <Input type="text" {...register("middlename")} />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Surname</label>
-            <Input disabled type="text" {...register("surname")} />
+            <Input type="text" {...register("surname")} />
           </div>
-          {/* <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
-            <Input disabled type="text" {...register("name")} />
-          </div> */}
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
-            <Input disabled type="email" {...register("email")} />
+            <Input type="email" {...register("email")} />
           </div>
-          {/* <div>
+          <CustomDropdown
+            label="Gender"
+            placeholder="Select gender"
+            value={watch("gender") ?? ""}
+            onChange={(value) => {
+              setValue("gender", value as "male" | "female");
+              clearErrors("gender");
+            }}
+            options={[
+              { label: "Male", value: "male" },
+              { label: "Female", value: "female" },
+            ]}
+            error={errors.gender?.message}
+          />
+          <div>
             <label className="block text-sm font-medium mb-1">Job Role</label>
-            <Input disabled type="text" {...register("jobRole")} />
-          </div> */}
+            <Input type="text" {...register("jobRole")} />
+          </div>
 
           {/* Editable Field */}
           <div>
@@ -135,7 +145,7 @@ export default function EditEmployeeModal({
               searchInputPlaceholder="Search for a level"
               placeholder={employee?.levelId?.name || "Select a Level"}
               fetchOptions={handleFetchLevels}
-              onChange={({value}) => {
+              onChange={({ value }) => {
                 setValue("levelId", value);
                 clearErrors("levelId");
               }}

@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getAllEmployees } from "@/api/employee.api";
 import SearchInput from "@/components/search-input";
 import EditEmployeeModal from "./modals/edit-employee-modal";
 import { EllipsisVertical } from "lucide-react";
 import DataTable from "@/components/table";
 import { formatDate } from "@/lib/utils";
-import { updateEmployeeDetailsByTenant } from "@/api/tenant.api";
-import { toast } from "sonner";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,16 +16,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Employee } from "@/types/employee.types";
+import DeleteEmployeeModal from "./modals/delete-employee-modal";
 
 export default function Employee() {
   const [searchParams] = useSearchParams();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [employeeToEdit, setEmployeeToEdit] = useState<Employee | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(
+    null
+  );
 
   const page = parseInt(searchParams.get("page") || "1", 10);
   const search = searchParams.get("search") || "";
-
-  const queryClient = useQueryClient();
 
   // Fetch employees using useQuery
   const { data, isLoading, isError, error } = useQuery({
@@ -46,19 +48,15 @@ export default function Employee() {
     setIsEditModalOpen(false);
   };
 
-  // Mutation for updating employee details
-  const { mutateAsync: updateEmployee, isPending: isUpdatingEmployee } =
-    useMutation({
-      mutationFn: updateEmployeeDetailsByTenant,
-      onSuccess: () => {
-        toast.success("Employee updated successfully");
-        queryClient.invalidateQueries({ queryKey: ["getAllEmployees"] });
-      },
-      onError: (error: Error) => {
-        toast.success("Something went wrong");
-        console.error("Failed to update admin status:", error);
-      },
-    });
+  const openDeleteModal = (employee: Employee) => {
+    setEmployeeToDelete(employee);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setEmployeeToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
 
   const columns = [
     {
@@ -113,17 +111,12 @@ export default function Employee() {
             </DropdownMenuItem>
 
             <DropdownMenuItem
-              className=" cursor-pointer"
+              className="cursor-pointer text-red-500 hover:bg-red-200"
               onClick={() => {
-                return null;
-                updateEmployee({
-                  _id: row?._id,
-                  isAdmin: !row?.isAdmin,
-                });
+                return openDeleteModal(row);
               }}
-              disabled={isUpdatingEmployee}
             >
-              {row?.isAdmin ? "Revoke Admin" : "Make Admin"}
+              Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -159,6 +152,14 @@ export default function Employee() {
           isOpen={isEditModalOpen}
           onClose={closeEditModal}
           employee={employeeToEdit}
+        />
+      )}
+
+      {isDeleteModalOpen && employeeToDelete && (
+        <DeleteEmployeeModal
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          employeeId={employeeToDelete}
         />
       )}
     </div>

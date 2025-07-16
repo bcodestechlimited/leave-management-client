@@ -23,6 +23,22 @@ export const updateEmployeeDetailsByTenant = async (payload: any) => {
   }
 };
 
+export const deleteEmployeeByTenant = async (employeeId: string) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/tenant/employee/${employeeId}`
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message || "Failed to delete employee"
+      );
+    }
+    throw error;
+  }
+};
+
 //Invites
 export const fetchAllInvites = async (params: Params) => {
   try {

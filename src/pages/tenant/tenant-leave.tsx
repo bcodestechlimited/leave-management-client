@@ -20,18 +20,46 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { toast } from "sonner";
+import SearchInput from "@/components/search-input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const options = [
+  {
+    value: "all",
+    label: "All",
+  },
+  {
+    value: "pending",
+    label: "Pending",
+  },
+  {
+    value: "approved",
+    label: "Approved",
+  },
+  {
+    value: "rejected",
+    label: "Rejected",
+  },
+];
 
 export default function TenantLeave() {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const page = parseInt(searchParams.get("page") || "1", 10);
   const search = searchParams.get("search") || "";
+  const status = searchParams.get("status") || "all";
 
   const { data, isLoading } = useQuery({
-    queryKey: ["leaves", { page, limit: 10, search }],
-    queryFn: () => getAllLeaves({ page, limit: 10, search }),
+    queryKey: ["leaves", { page, limit: 10, search, status }],
+    queryFn: () => getAllLeaves({ page, limit: 10, search, status }),
   });
 
   const monthlyReportMutation = useMutation({
@@ -64,6 +92,19 @@ export default function TenantLeave() {
     await monthlyReportMutation.mutateAsync({
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
+    });
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    setSearchParams((prev: URLSearchParams) => {
+      const params = new URLSearchParams(prev);
+      if (newStatus === "all") {
+        params.delete("status");
+      } else {
+        params.set("status", newStatus);
+      }
+      params.set("page", "1");
+      return params;
     });
   };
 
@@ -179,6 +220,26 @@ export default function TenantLeave() {
 
           <Button onClick={handleDownloadReport}>Download Report</Button>
         </div>
+      </div>
+
+      <div className="flex gap-4 items-center justify-end pb-4">
+        <SearchInput />
+        <Select value={status} onValueChange={handleStatusChange}>
+          <SelectTrigger className="w-fit flex gap-2">
+            <SelectValue placeholder={"Status"} />
+          </SelectTrigger>
+          <SelectContent>
+            {options.map((option) => (
+              <SelectItem
+                className="cursor-pointer"
+                key={option.value}
+                value={option.value}
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <DataTable

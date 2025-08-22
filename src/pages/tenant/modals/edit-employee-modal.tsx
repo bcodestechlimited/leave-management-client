@@ -88,6 +88,8 @@ export default function EditEmployeeModal({
   });
 
   const handleFormSubmit = async (data: FormValues) => {
+    console.log({ data });
+
     await editMutation.mutateAsync(data);
   };
 
@@ -178,15 +180,19 @@ export default function EditEmployeeModal({
           <div className="mb-4">
             <Label className="block text-sm font-medium mb-1">
               Line Manager -{" "}
-              {getEmployeeFullName(employee?.lineManager as Employee)} {}
+              <span className="text-muted-foreground font-semibold">
+                {" "}
+                {getEmployeeFullName(employee?.lineManager as Employee)}{" "}
+              </span>
             </Label>
             <div className="flex items-center gap-2">
               <SearchableDropdown
                 searchInputPlaceholder="Search for a line manager"
                 placeholder={
-                  employee?.lineManager?.firstname ||
-                  employee?.lineManager?.email ||
-                  "Search for a line manager"
+                  getEmployeeFullName(employee?.lineManager as Employee) ===
+                  "N/A"
+                    ? "Search for a line manager"
+                    : getEmployeeFullName(employee?.lineManager as Employee)
                 }
                 fetchOptions={handleFetchLineManagers}
                 onChange={({ value }) => {
@@ -213,15 +219,17 @@ export default function EditEmployeeModal({
           <div className="mb-4">
             <Label className="block text-sm font-medium mb-1">
               Reliever -{" "}
-              {getEmployeeFullName(employee?.lineManager as Employee)} {}
+              <span className="text-muted-foreground font-semibold">
+                {getEmployeeFullName(employee?.reliever as Employee)}
+              </span>
             </Label>
             <div className="flex items-center gap-2">
               <SearchableDropdown
                 searchInputPlaceholder="Search for a reliever"
                 placeholder={
-                  employee?.reliever?.name ||
-                  employee?.reliever?.email ||
-                  "Search for a reliever"
+                  getEmployeeFullName(employee?.reliever as Employee) === "N/A"
+                    ? "Search for a reliever"
+                    : getEmployeeFullName(employee?.reliever as Employee)
                 }
                 fetchOptions={handleFetchEmployees}
                 onChange={({ value }) => {

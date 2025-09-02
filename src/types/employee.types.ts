@@ -38,6 +38,9 @@ export interface Employee {
 
 export interface UpdateEmployee {
   name: string | null;
+  firstname: string ;
+  middlename: string;
+  surname: string;
   email: string;
   lineManager: string | null;
   isOnLeave: boolean;

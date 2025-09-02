@@ -16,9 +16,9 @@ import InviteModal from "./modals/employee-invite";
 import { CustomDropdown } from "@/components/custom-dropdown";
 
 export interface FormInputs {
-  firstname: string | null;
-  middlename: string | null;
-  surname: string | null;
+  firstname: string;
+  middlename: string;
+  surname: string;
   email: string;
   gender: string;
   lineManager: string | null;
@@ -57,9 +57,9 @@ export default function EmployeeProfileUpdate() {
     clearErrors,
   } = useForm<FormInputs>({
     defaultValues: {
-      firstname: employee?.firstname || null,
-      middlename: employee?.middlename || null,
-      surname: employee?.surname || null,
+      firstname: employee?.firstname,
+      middlename: employee?.middlename,
+      surname: employee?.surname,
       email: employee?.email,
       gender: employee?.gender || "male",
       lineManager: employee?.lineManager?._id || null,

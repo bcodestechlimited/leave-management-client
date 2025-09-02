@@ -8,12 +8,18 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { SearchableDropdown } from "@/components/searchable-dropdown";
-import { handleFetchLevels } from "@/lib/utils";
+import {
+  getEmployeeFullName,
+  handleFetchEmployees,
+  handleFetchLevels,
+  handleFetchLineManagers,
+} from "@/lib/utils";
 import { updateEmployeeDetailsByTenant } from "@/api/tenant.api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Employee } from "@/types/employee.types";
 import { CustomDropdown } from "@/components/custom-dropdown";
+import { Label } from "@/components/ui/label";
 
 interface EditEmployeeModalProps {
   isOpen: boolean;
@@ -30,6 +36,8 @@ interface FormValues {
   surname: string;
   gender: string;
   email: string;
+  lineManager: string | null;
+  reliever: string | null;
   jobRole: string;
   levelId: string;
   isAdmin: boolean;
@@ -58,6 +66,8 @@ export default function EditEmployeeModal({
       surname: employee.surname,
       email: employee.email,
       gender: employee.gender || "male",
+      lineManager: employee?.lineManager?._id || null,
+      reliever: employee?.reliever?._id || null,
       jobRole: employee.jobRole,
       isAdmin: employee.isAdmin,
       levelId: employee.levelId?._id || "",
@@ -78,6 +88,8 @@ export default function EditEmployeeModal({
   });
 
   const handleFormSubmit = async (data: FormValues) => {
+    console.log({ data });
+
     await editMutation.mutateAsync(data);
   };
 
@@ -160,6 +172,78 @@ export default function EditEmployeeModal({
             {errors.levelId && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.levelId.message}
+              </p>
+            )}
+          </div>
+
+          {/* Line Manager */}
+          <div className="mb-4">
+            <Label className="block text-sm font-medium mb-1">
+              Line Manager -{" "}
+              <span className="text-muted-foreground font-semibold">
+                {" "}
+                {getEmployeeFullName(employee?.lineManager as Employee)}{" "}
+              </span>
+            </Label>
+            <div className="flex items-center gap-2">
+              <SearchableDropdown
+                searchInputPlaceholder="Search for a line manager"
+                placeholder={
+                  getEmployeeFullName(employee?.lineManager as Employee) ===
+                  "N/A"
+                    ? "Search for a line manager"
+                    : getEmployeeFullName(employee?.lineManager as Employee)
+                }
+                fetchOptions={handleFetchLineManagers}
+                onChange={({ value }) => {
+                  console.log("Selected Level ID:", value);
+                  setValue("lineManager", value);
+                  clearErrors(["lineManager"]);
+                }}
+              />
+            </div>
+            <Input
+              type="text"
+              {...register("lineManager")}
+              className="hidden"
+            />
+
+            {errors.lineManager && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.lineManager?.message}
+              </p>
+            )}
+          </div>
+
+          {/* Reliever */}
+          <div className="mb-4">
+            <Label className="block text-sm font-medium mb-1">
+              Reliever -{" "}
+              <span className="text-muted-foreground font-semibold">
+                {getEmployeeFullName(employee?.reliever as Employee)}
+              </span>
+            </Label>
+            <div className="flex items-center gap-2">
+              <SearchableDropdown
+                searchInputPlaceholder="Search for a reliever"
+                placeholder={
+                  getEmployeeFullName(employee?.reliever as Employee) === "N/A"
+                    ? "Search for a reliever"
+                    : getEmployeeFullName(employee?.reliever as Employee)
+                }
+                fetchOptions={handleFetchEmployees}
+                onChange={({ value }) => {
+                  console.log("Selected Level ID:", value);
+                  setValue("reliever", value);
+                  clearErrors(["reliever"]);
+                }}
+              />
+            </div>
+            <Input type="text" {...register("reliever")} className="hidden" />
+
+            {errors.reliever && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.reliever?.message}
               </p>
             )}
           </div>

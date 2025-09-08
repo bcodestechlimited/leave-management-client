@@ -193,7 +193,7 @@ export default function ApplyLeaveModal({
 
                     clearErrors(["startDate"]);
                   }}
-                  disabled={(date) => date < new Date()}
+                  // disabled={(date) => date < new Date()}
                   initialFocus
                   className="rounded-md border bg-white z-50"
                 />

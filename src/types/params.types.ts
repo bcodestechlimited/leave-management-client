@@ -3,4 +3,5 @@ export interface Params {
   limit: number | string;
   search?: string;
   status?: string;
+  tenantId?: string;
 }

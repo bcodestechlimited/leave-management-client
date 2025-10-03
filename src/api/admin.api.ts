@@ -58,3 +58,49 @@ export const getLeaveRequestAnalyticsForAdmin = async (params: {
     throw error;
   }
 };
+
+export const getAllLeavesForAdmin = async (params: Params) => {
+  try {
+    const response = await axiosInstance.get(`/admin/leave/leave-request`, {
+      params,
+    });
+    const data = response?.data?.data;
+
+    return data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch leaves - admin"
+      );
+    }
+    throw error;
+  }
+};
+
+export const updateLeaveRequestForAdmin = async ({
+  leaveId,
+  status,
+  reason,
+}: {
+  leaveId: string;
+  status: "approved" | "rejected";
+  reason: string;
+}) => {
+  try {
+    const response = await axiosInstance.put(
+      `/admin/leave/leave-request/${leaveId}`,
+      {
+        status,
+        reason,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message || "Failed to update leave"
+      );
+    }
+    throw error;
+  }
+};

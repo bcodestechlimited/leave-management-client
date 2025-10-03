@@ -39,6 +39,8 @@ import TenantProfileUpdate from "./pages/tenant/tenant-profile-update";
 import ClientLeaveDetail from "./pages/tenant/leave/client-leave-detail";
 import LineManagers from "./pages/tenant/line-manager";
 import AdminDashboard from "./pages/admin/admin-dashboard";
+import AdminLeaves from "./pages/admin/admin-leaves";
+import AdminLeaveDetail from "./pages/admin/admin-leave-detail";
 
 const queryClient = new QueryClient();
 
@@ -209,6 +211,14 @@ function App() {
             {
               path: "tenants",
               element: <Tenants />,
+            },
+            {
+              path: "leaves",
+              element: <AdminLeaves />,
+            },
+            {
+              path: "leaves/:leaveId",
+              element: <AdminLeaveDetail />,
             },
           ],
         },

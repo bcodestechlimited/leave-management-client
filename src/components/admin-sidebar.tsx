@@ -32,6 +32,12 @@ const routes: Route[] = [
     icon: <Users className="w-5 h-5" />,
     // submenu: [],
   },
+  {
+    name: "Leaves",
+    path: "/dashboard/admin/leaves",
+    icon: <Users className="w-5 h-5" />,
+    // submenu: [],
+  },
 ];
 
 export default function AdminSidebar() {

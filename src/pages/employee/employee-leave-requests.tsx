@@ -6,20 +6,54 @@ import LeaveRequestActionModal from "./modals/leave-request-action-modal";
 import LeaveRequestDetailModal from "./modals/leave-request-detail-modal";
 import { fetchManagerLeaveRequest, updateLeaveRequest } from "@/api/leave.api";
 import { Leave } from "@/types/leave.types";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Eye } from "lucide-react";
 import DataTable from "@/components/table";
+import SearchInput from "@/components/search-input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const options = [
+  {
+    value: "all",
+    label: "All",
+  },
+  {
+    value: "pending",
+    label: "Pending",
+  },
+  {
+    value: "approved",
+    label: "Approved",
+  },
+  {
+    value: "rejected",
+    label: "Rejected",
+  },
+];
 
 export default function EmployeeLeaveRequests() {
   const [selectedLeave, setSelectedLeave] = useState<Leave | null>(null);
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const search = searchParams.get("search") || "";
+  const limit = parseInt(searchParams.get("limit") || "10", 10);
+  const status = searchParams.get("status") || "all";
+
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["lineManagerLeaves"],
-    queryFn: fetchManagerLeaveRequest,
+    queryKey: ["lineManagerLeaves", { page, limit, search, status }],
+    queryFn: () => fetchManagerLeaveRequest({ page, limit, search, status }),
   });
 
   const columns = [
@@ -91,10 +125,43 @@ export default function EmployeeLeaveRequests() {
     });
   };
 
+  const handleStatusChange = async (newStatus: string) => {
+    setSearchParams((prev: URLSearchParams) => {
+      const params = new URLSearchParams(prev);
+      if (newStatus === "all") {
+        params.delete("status");
+      } else {
+        params.set("status", newStatus);
+      }
+      params.set("page", "1");
+      return params;
+    });
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-lg font-semibold">Line Manager Leave Requests</h1>
+      </div>
+
+      <div className="flex gap-4 items-center justify-end pb-4">
+        <SearchInput />
+        <Select value={status} onValueChange={handleStatusChange}>
+          <SelectTrigger className="w-fit flex gap-2">
+            <SelectValue placeholder={"Status"} />
+          </SelectTrigger>
+          <SelectContent>
+            {options.map((option) => (
+              <SelectItem
+                className="cursor-pointer"
+                key={option.value}
+                value={option.value}
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <DataTable

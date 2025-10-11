@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import axiosInstance from "../lib/axios.config";
 import { ApplyLeaveFormData } from "@/types/leave.types";
 import { Params } from "@/types/params.types";
+import { IParams } from "@/interfaces/params.interface";
 
 // Leave Requests
 export const getAllLeaves = async (params: Params) => {
@@ -74,9 +75,11 @@ export const applyForLeave = async (data: ApplyLeaveFormData) => {
   }
 };
 
-export const fetchManagerLeaveRequest = async () => {
+export const fetchManagerLeaveRequest = async (params: IParams) => {
   try {
-    const response = await axiosInstance.get("/leave/leave-request/manager");
+    const response = await axiosInstance.get("/leave/leave-request/manager", {
+      params,
+    });
     return response.data?.data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -189,7 +192,6 @@ export const getLeaveRequestAnalytics = async (params: { year?: string }) => {
     throw error;
   }
 };
-
 
 export const getMonthlyLeaveReport = async (params: {
   startDate?: string;

@@ -41,6 +41,7 @@ import LineManagers from "./pages/tenant/line-manager";
 import AdminDashboard from "./pages/admin/admin-dashboard";
 import AdminLeaves from "./pages/admin/admin-leaves";
 import AdminLeaveDetail from "./pages/admin/admin-leave-detail";
+import AdminLoginAsEmployee from "./pages/admin/admin-login-as-employee";
 
 const queryClient = new QueryClient();
 
@@ -196,6 +197,10 @@ function App() {
     {
       path: "/admin/login",
       element: <AdminLogin />,
+    },
+    {
+      path: "/admin/login/employee",
+      element: <AdminLoginAsEmployee />,
     },
     {
       path: "/dashboard/admin",

@@ -4,6 +4,8 @@ import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
 import { useAdminActions, useAdminStore } from "@/store/useAdminStore";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 type LoginFormInputs = {
   email: string;
@@ -11,6 +13,7 @@ type LoginFormInputs = {
 };
 
 export default function AdminLogin() {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -62,19 +65,28 @@ export default function AdminLogin() {
           <Label htmlFor="password" className="block mb-1 font-medium">
             Password
           </Label>
-          <Input
-            id="password"
-            type="password"
-            {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 5,
-                message: "Password must be at least 5 characters long",
-              },
-            })}
-            placeholder="Enter your password"
-            className={`w-full ${errors.password ? "border-red-500" : ""}`}
-          />
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 5,
+                  message: "Password must be at least 5 characters long",
+                },
+              })}
+              placeholder="Enter your password"
+              className={`w-full ${errors.password ? "border-red-500" : ""}`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2"
+            >
+              {showPassword ? <EyeOff /> : <Eye />}
+            </button>
+          </div>
           {errors.password && (
             <p className="text-red-500 text-sm mt-1">
               {errors.password.message}

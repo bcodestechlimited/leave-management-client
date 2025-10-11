@@ -3,6 +3,32 @@ import { Params } from "@/types/params.types";
 import { CreateTenant } from "@/types/tenant.types";
 import { AxiosError } from "axios";
 
+export const adminLoginAsEmployee = async (payload: {
+  email: string;
+  password: string;
+}) => {
+  try {
+    const response = await axiosInstance.post(
+      `/admin/auth/login/employee`,
+      payload
+    );
+
+    const token = response?.data?.data?.token;
+    const tenantId = response?.data?.data?.employee?.tenantId;
+    // const employee = response?.data?.data?.employee;
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("tenant-id", tenantId);
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || "Failed to log in");
+    }
+    throw error;
+  }
+};
+
 export const getAllTenants = async (params: Params) => {
   try {
     const response = await axiosInstance.get(`/admin/tenant/`, { params });

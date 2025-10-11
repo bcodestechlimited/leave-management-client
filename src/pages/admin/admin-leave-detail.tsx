@@ -96,10 +96,18 @@ export default function AdminLeaveDetail() {
             : "N/A"}
         </p>
         <p>
+          <strong>Employee Email:</strong>{" "}
+          {leaveRequest?.employee ? leaveRequest?.employee.email : "N/A"}
+        </p>
+        <p>
           <strong>Line Manager Name:</strong>{" "}
           {leaveRequest?.lineManager
             ? getEmployeeFullName(leaveRequest?.lineManager)
             : "N/A"}
+        </p>
+        <p>
+          <strong>Line Manager Email:</strong>{" "}
+          {leaveRequest?.lineManager ? leaveRequest?.lineManager.email : "N/A"}
         </p>
         <p className="capitalize">
           <strong>Leave Type:</strong> {leaveRequest?.leaveType?.name}

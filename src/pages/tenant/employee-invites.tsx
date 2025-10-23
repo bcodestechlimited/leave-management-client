@@ -30,6 +30,8 @@ export default function EmployeeInvites() {
     });
   };
 
+  console.log({ data });
+
   const columns = [
     {
       header: "Email",
@@ -43,11 +45,20 @@ export default function EmployeeInvites() {
     {
       header: "Status",
       isStatus: true,
-      render: (row: any) => (
-        <span className={`capitalize p-2 ${getStatusClasses(row.status)}`}>
-          {row.status}
-        </span>
-      ),
+      render: (row: any) => {
+        if (row.expiresAt < Date.now()) {
+          return (
+            <span className={`capitalize p-2 ${getStatusClasses("expired")}`}>
+              Expired
+            </span>
+          );
+        }
+        return (
+          <span className={`capitalize p-2 ${getStatusClasses(row.status)}`}>
+            {row.status}
+          </span>
+        );
+      },
     },
     {
       header: "URL",

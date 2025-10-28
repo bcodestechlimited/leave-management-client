@@ -265,6 +265,10 @@ export const addLineManager = async (payload: any) => {
         throw new Error(error.response?.data?.errors[0].message);
       }
 
+      if (error.response?.status === 409) {
+        throw new Error(error.response?.data?.message);
+      }
+
       throw new Error(
         error.response?.data?.message || "Failed to add line manager"
       );

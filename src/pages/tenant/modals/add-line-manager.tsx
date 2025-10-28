@@ -46,7 +46,7 @@ export default function AddLineManagerModal({
       reset();
     },
     onError: (error: Error) => {
-      toast.error("Failed to add Line Manager");
+      toast.error(error.message);
       console.error(error);
     },
   });

@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { formatDate, getEmployeeFullName, getStatusClasses } from "@/lib/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CalendarIcon, EllipsisVertical } from "lucide-react";
+import { CalendarIcon, EllipsisVertical, Loader } from "lucide-react";
 import { useSearchParams, Link } from "react-router-dom";
 import {
   Popover,
@@ -149,7 +149,7 @@ export default function TenantLeave() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-fit">
-            <Link to={`/dashboard/tenant/leave/${row._id}`}>
+            <Link to={`/dashboard/client/leave/${row._id}`}>
               <DropdownMenuItem className=" cursor-pointer">
                 View
               </DropdownMenuItem>
@@ -217,8 +217,18 @@ export default function TenantLeave() {
               </Popover>
             </div>
           </div>
-
-          <Button onClick={handleDownloadReport}>Download Report</Button>
+          <Button
+            disabled={monthlyReportMutation.isPending}
+            onClick={handleDownloadReport}
+          >
+            {monthlyReportMutation.isPending ? (
+              <span className="flex items-center ">
+                <Loader className="mr-2 animate-spin" /> Generating...
+              </span>
+            ) : (
+              "Download Report"
+            )}
+          </Button>
         </div>
       </div>
 

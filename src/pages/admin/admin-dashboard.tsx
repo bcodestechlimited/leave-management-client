@@ -7,8 +7,8 @@ import SwitchTenants from "./_components/switch-tenants";
 
 export default function AdminDashboard() {
   const [selectedYear, setSelectedYear] = useState("2025");
-  const [tenantId, setTenantId] = useState<string>(
-    () => localStorage.getItem("tenant-id") || ""
+  const [clientId, setClientId] = useState<string>(
+    () => localStorage.getItem("client-id") || ""
   );
 
   const {
@@ -17,19 +17,19 @@ export default function AdminDashboard() {
     isError,
   } = useQuery({
     queryFn: () =>
-      getLeaveRequestAnalyticsForAdmin({ year: selectedYear, tenantId }),
-    queryKey: ["leave-request-analytics", selectedYear, tenantId],
-    enabled: !!tenantId,
+      getLeaveRequestAnalyticsForAdmin({ year: selectedYear, clientId }),
+    queryKey: ["leave-request-analytics", selectedYear, clientId],
+    enabled: !!clientId,
   });
 
   return (
     <div>
-      <SwitchTenants tenantId={tenantId} setTenantId={setTenantId} />
+      <SwitchTenants clientId={clientId} setClientId={setClientId} />
       <Charts
         chartData={chartData}
         isLoading={isLoading}
         isError={isError}
-        tenantId={tenantId}
+        tenantId={clientId}
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
       />

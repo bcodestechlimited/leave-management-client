@@ -15,65 +15,65 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useTenantStore } from "@/store/useTenantStore";
+import { useClientStore } from "@/store/use-client-store";
 
 const routes = [
   {
     name: "Dashboard",
-    path: "/dashboard/tenant",
+    path: "/dashboard/client",
     icon: <LayoutDashboardIcon className="w-5 h-5" />,
   },
   {
     name: "Employee",
-    path: "/dashboard/tenant/employee",
+    path: "/dashboard/client/employee",
     icon: <Settings className="w-5 h-5" />,
     submenu: [
       {
         name: "Invites",
-        path: "/dashboard/tenant/employee/invite",
+        path: "/dashboard/client/employee/invite",
         icon: <Mail className="w-4 h-4" />,
       },
     ],
   },
   {
     name: "Line Managers",
-    path: "/dashboard/tenant/line-manager",
+    path: "/dashboard/client/line-manager",
     icon: <Users className="w-5 h-5" />,
   },
   {
     name: "Leave",
-    path: "/dashboard/tenant/leave",
+    path: "/dashboard/client/leave",
     icon: <FileStack className="w-5 h-5" />,
     submenu: [
       {
         name: "Leave Types",
-        path: "/dashboard/tenant/leave/types",
+        path: "/dashboard/client/leave/types",
         icon: <FilePenLine className="w-4 h-4" />,
       },
       // {
       //   name: "Leave History",
-      //   path: "/dashboard/tenant/leave/history",
+      //   path: "/dashboard/client/leave/history",
       //   icon: <FileStack className="w-4 h-4" />,
       // },
     ],
   },
   {
     name: "Level",
-    path: "/dashboard/tenant/level",
+    path: "/dashboard/client/level",
     icon: <UserPen className="w-4 h-4" />,
   },
   {
     name: "Profile",
-    path: "/dashboard/tenant/profile",
+    path: "/dashboard/client/profile",
     icon: <User className="w-5 h-5" />,
   },
 ];
 
-export default function TenantSidebar() {
+export default function ClientSidebar() {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const location = useLocation();
 
-  const { tenant } = useTenantStore();
+  const { client } = useClientStore();
 
   const toggleMenu = (menuName: string) => {
     setOpenMenu((prev) => (prev === menuName ? null : menuName));
@@ -98,10 +98,10 @@ export default function TenantSidebar() {
       <div className="p-4 border-b flex items-center gap-2">
         <img
           className="w-8 h-6"
-          src={tenant?.logo}
-          alt={`${tenant?.name} logo`}
+          src={client?.logo}
+          alt={`${client?.name} logo`}
         />
-        <h1 className="text-lg font-bold">{tenant?.name}</h1>
+        <h1 className="text-lg font-bold">{client?.name}</h1>
       </div>
 
       {/* Navigation Links */}

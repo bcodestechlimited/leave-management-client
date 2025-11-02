@@ -1,6 +1,7 @@
 import axiosInstance from "@/lib/axios.config";
+import { useEmployeeStore } from "@/store/use-employee-store";
 import { Params } from "@/types/params.types";
-import { CreateTenant } from "@/types/tenant.types";
+import { CreateClient } from "@/types/tenant.types";
 import { AxiosError } from "axios";
 
 export const adminLoginAsEmployee = async (payload: {
@@ -14,11 +15,13 @@ export const adminLoginAsEmployee = async (payload: {
     );
 
     const token = response?.data?.data?.token;
-    const tenantId = response?.data?.data?.employee?.tenantId;
-    // const employee = response?.data?.data?.employee;
+    const clientId = response?.data?.data?.employee?.clientId;
+    const employee = response?.data?.data?.employee;
+
+    useEmployeeStore.getState().actions.setEmployee(employee);
 
     localStorage.setItem("token", token);
-    localStorage.setItem("tenant-id", tenantId);
+    localStorage.setItem("client-id", clientId);
 
     return response.data;
   } catch (error) {
@@ -29,12 +32,14 @@ export const adminLoginAsEmployee = async (payload: {
   }
 };
 
-export const getAllTenants = async (params: Params) => {
+export const getAllClients = async (params: Params) => {
   try {
-    const response = await axiosInstance.get(`/admin/tenant/`, { params });
-    const { tenants, pagination } = response?.data?.data;
+    const response = await axiosInstance.get(`/admin/client/`, { params });
+    const { clients, pagination } = response?.data?.data;
 
-    return { tenants, pagination };
+    console.log({ response });
+
+    return { clients, pagination };
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
@@ -45,11 +50,11 @@ export const getAllTenants = async (params: Params) => {
   }
 };
 
-export const addTenant = async (tenantData: CreateTenant) => {
-  console.log(tenantData);
+export const addClient = async (clientData: CreateClient) => {
+  console.log(clientData);
 
   try {
-    await axiosInstance.post(`/admin/tenant`, tenantData, {
+    await axiosInstance.post(`/admin/client`, clientData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -64,7 +69,7 @@ export const addTenant = async (tenantData: CreateTenant) => {
 
 export const getLeaveRequestAnalyticsForAdmin = async (params: {
   year?: string;
-  tenantId?: string;
+  clientId?: string;
 }) => {
   try {
     const response = await axiosInstance.get(`/admin/leave/analytics`, {
@@ -87,9 +92,12 @@ export const getLeaveRequestAnalyticsForAdmin = async (params: {
 
 export const getAllLeavesForAdmin = async (params: Params) => {
   try {
-    const response = await axiosInstance.get(`/admin/leave/leave-request`, {
+    const response = await axiosInstance.get(`/admin/leave`, {
       params,
     });
+
+    console.log({ response });
+
     const data = response?.data?.data;
 
     return data;
@@ -114,7 +122,7 @@ export const updateLeaveRequestForAdmin = async ({
 }) => {
   try {
     const response = await axiosInstance.put(
-      `/admin/leave/leave-request/${leaveId}`,
+      `/admin/leave/${leaveId}`,
       {
         status,
         reason,

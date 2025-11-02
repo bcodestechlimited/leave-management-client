@@ -4,4 +4,5 @@ export interface Params {
   search?: string;
   status?: string;
   tenantId?: string;
+  clientId?: string;
 }

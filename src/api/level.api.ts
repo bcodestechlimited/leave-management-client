@@ -37,7 +37,9 @@ export const editLevel = async (payload: { _id: string; name: string }) => {
   console.log(payload);
 
   try {
-    const response = await axiosInstance.put(`/level/${payload._id}`, payload);
+    const response = await axiosInstance.put(`/level/${payload._id}`, {
+      name: payload.name,
+    });
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {

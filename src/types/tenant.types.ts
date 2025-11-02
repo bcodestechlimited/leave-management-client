@@ -1,34 +1,33 @@
-export interface Tenant {
+export interface Client {
   _id: string;
   name: string;
   email: string;
   logo: string;
 }
 
-export interface CreateTenant {
+export interface CreateClient {
   name: string;
   email: string;
   logo: File;
   color: string;
 }
 
-export interface UpdateTenant {
+export interface UpdateClient {
   name: string | null;
   email: string;
-  logo: File | null;
+  logo: File | undefined;
   color: string;
 }
 
-export interface TenantState {
-  tenant: any | null;
-  isFetchingTenant: boolean;
+export interface ClientState {
+  client: any | null;
   actions: {
-    setTenant: (tenant: any) => Promise<void>;
+    setClient: (client: any) => Promise<void>;
   };
 }
 
-export interface TenantSetFunction {
+export interface ClientSetFunction {
   (
-    state: Partial<TenantState> | ((state: TenantState) => Partial<TenantState>)
+    state: Partial<ClientState> | ((state: ClientState) => Partial<ClientState>)
   ): void;
 }

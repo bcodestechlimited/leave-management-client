@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useEmployeeActions, useEmployeeStore } from "@/store/useEmployeeStore";
+import { useEmployeeStore } from "@/store/use-employee-store";
 import { toast } from "sonner";
 
 interface Submenu {
@@ -64,7 +64,6 @@ export default function EmployeeSidebar() {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const location = useLocation();
-  const { setAuthEmployee } = useEmployeeActions();
   const { employee } = useEmployeeStore();
 
   const navigate = useNavigate();
@@ -83,7 +82,6 @@ export default function EmployeeSidebar() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setAuthEmployee(null);
     navigate(`/login`);
     toast.success("Logged out successfully");
   };
@@ -122,10 +120,10 @@ export default function EmployeeSidebar() {
       <div className="p-4 border-b flex items-center gap-2">
         <img
           className=" max-w-10 max-h-10"
-          src={employee?.tenantId?.logo}
-          alt={`${employee?.tenantId?.name} logo`}
+          src={employee?.clientId?.logo}
+          alt={`${employee?.clientId?.name} logo`}
         />
-        <h1 className="text-lg font-bold">{employee?.tenantId?.name}</h1>
+        <h1 className="text-lg font-bold">{employee?.clientId?.name}</h1>
       </div>
 
       {/* Navigation Links */}

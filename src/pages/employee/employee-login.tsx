@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { employeeSignIn } from "@/api/employee.api";
-import { useEmployeeActions } from "@/store/useEmployeeStore";
-import { Employee } from "@/types/employee.types";
+import { authService } from "@/api/auth.api";
 
 interface SignInFormInputs {
   email: string;
@@ -16,7 +14,6 @@ interface SignInFormInputs {
 
 export default function EmployeeLogin() {
   const navigate = useNavigate();
-  const { setAuthEmployee } = useEmployeeActions();
 
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard/employee";
@@ -28,9 +25,8 @@ export default function EmployeeLogin() {
   } = useForm<SignInFormInputs>();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: employeeSignIn,
-    onSuccess: (data) => {
-      setAuthEmployee(data.data.employee as Employee);
+    mutationFn: authService.employeeLogin,
+    onSuccess: () => {
       toast.success("Login successful!");
       navigate(from, { replace: true });
     },

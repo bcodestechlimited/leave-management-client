@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { formatDate, getEmployeeFullName, getStatusClasses } from "@/lib/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CalendarIcon, EllipsisVertical } from "lucide-react";
+import { CalendarIcon, EllipsisVertical, Loader } from "lucide-react";
 import { useSearchParams, Link } from "react-router-dom";
 import {
   Popover,
@@ -51,8 +51,8 @@ const options = [
 ];
 
 export default function AdminLeaves() {
-  const [tenantId, setTenantId] = useState<string>(
-    () => localStorage.getItem("tenant-id") || ""
+  const [clientId, setClientId] = useState<string>(
+    () => localStorage.getItem("client-id") || ""
   );
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
@@ -63,10 +63,10 @@ export default function AdminLeaves() {
   const status = searchParams.get("status") || "all";
 
   const { data, isLoading } = useQuery({
-    queryKey: ["leaves", { page, limit: 10, search, status, tenantId }],
+    queryKey: ["leaves", { page, limit: 10, search, status, clientId }],
     queryFn: () =>
-      getAllLeavesForAdmin({ page, limit: 10, search, status, tenantId }),
-    enabled: !!tenantId,
+      getAllLeavesForAdmin({ page, limit: 10, search, status, clientId }),
+    enabled: !!clientId,
   });
 
   const monthlyReportMutation = useMutation({
@@ -174,7 +174,7 @@ export default function AdminLeaves() {
 
   return (
     <div>
-      <SwitchTenants tenantId={tenantId} setTenantId={setTenantId} />
+      <SwitchTenants clientId={clientId} setClientId={setClientId} />
       <div>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-lg font-semibold">Leave History</h1>
@@ -227,7 +227,18 @@ export default function AdminLeaves() {
               </div>
             </div>
 
-            <Button onClick={handleDownloadReport}>Download Report</Button>
+            <Button
+              disabled={monthlyReportMutation.isPending}
+              onClick={handleDownloadReport}
+            >
+              {monthlyReportMutation.isPending ? (
+                <span className="flex items-center ">
+                  <Loader className="mr-2 animate-spin" /> Generating...
+                </span>
+              ) : (
+                "Download Report"
+              )}
+            </Button>
           </div>
         </div>
 
@@ -256,7 +267,7 @@ export default function AdminLeaves() {
           data={data?.leaveRequests || []}
           isLoading={isLoading}
           noDataMessage={
-            tenantId ? "No leave request found." : "Please select a client"
+            clientId ? "No leave request found." : "Please select a client"
           }
           pagination={data?.pagination}
         />

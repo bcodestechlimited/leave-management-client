@@ -1,4 +1,4 @@
-import { Employee } from "./employee.types";
+import { IEmployee } from "./employee.types";
 
 export interface LeaveState {
   leaves: Record<string, any>[];
@@ -27,8 +27,8 @@ export interface ApplyLeaveFormData {
 
 export interface Leave {
   _id: string;
-  employee: Employee;
-  lineManager: Employee;
+  employee: IEmployee;
+  lineManager: IEmployee;
   leaveType: {
     _id: string;
     name: string;

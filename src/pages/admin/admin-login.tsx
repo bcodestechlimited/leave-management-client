@@ -2,10 +2,11 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button"; // Adjust based on your shadcn setup
 import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
-import { useAdminActions, useAdminStore } from "@/store/useAdminStore";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { authService } from "@/api/auth.api";
 
 type LoginFormInputs = {
   email: string;
@@ -20,17 +21,36 @@ export default function AdminLogin() {
     formState: { errors },
   } = useForm<LoginFormInputs>();
 
-  const { isSubmitting } = useAdminStore();
-  const { loginAdmin } = useAdminActions();
-
   const navigate = useNavigate();
 
-  const onSubmit = async (data: LoginFormInputs) => {
-    console.log("Login Data:", data);
-    await loginAdmin(data, () => {
+  // const onSubmit = async (data: LoginFormInputs) => {
+  //   console.log("Login Data:", data);
+  //   await loginAdmin(data, () => {
+  //     navigate("/dashboard/admin");
+  //   });
+  //   // Perform login action (e.g., API call)
+  // };
+
+  const mutation = useMutation({
+    mutationFn: authService.adminSignIn,
+    onSuccess: () => {
+      // console.log({ user });
+
+      // Admin
       navigate("/dashboard/admin");
-    });
-    // Perform login action (e.g., API call)
+    },
+    onError: (error: any) => {
+      // toast.error(error.message || "Something went wrong");
+      // setError(error.message || "Something went wrong");
+      console.log(error);
+    },
+  });
+
+  /** ---- Submit Handler ---- */
+  const onSubmit = (data: LoginFormInputs) => {
+    // setError(null);
+
+    mutation.mutateAsync(data);
   };
 
   return (
@@ -95,8 +115,8 @@ export default function AdminLogin() {
         </div>
 
         {/* Submit Button */}
-        <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? "Logging in..." : "Login"}
+        <Button type="submit" disabled={mutation.isPending} className="w-full">
+          {mutation.isPending ? "Logging in..." : "Login"}
         </Button>
       </form>
     </div>

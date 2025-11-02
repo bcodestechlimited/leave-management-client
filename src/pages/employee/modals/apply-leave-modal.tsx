@@ -116,6 +116,7 @@ export default function ApplyLeaveModal({
       startDate: start.toISOString().split("T")[0].toString(),
       resumptionDate: end.toISOString().split("T")[0].toString(),
       document: data.document?.[0],
+      duration: Number(duration),
     };
 
     console.log({ updatedData });

@@ -1,6 +1,6 @@
 import { EmployeeLeaveBalance } from "./leave.types";
 
-export interface Employee {
+export interface IEmployee {
   _id: string;
   staffId: string;
   name: string;
@@ -15,13 +15,13 @@ export interface Employee {
   isOnLeave: boolean;
   isAdmin: boolean;
   accountType: "lineManager" | "employee";
-  tenantId: {
+  clientId: {
     name: string;
     logo: string;
     color: string;
   };
-  lineManager: Employee;
-  reliever: Employee;
+  lineManager: IEmployee;
+  reliever: IEmployee;
   levelId: {
     _id: string;
     name: string;
@@ -38,7 +38,7 @@ export interface Employee {
 
 export interface UpdateEmployee {
   name: string | null;
-  firstname: string ;
+  firstname: string;
   middlename: string;
   surname: string;
   email: string;
@@ -47,20 +47,4 @@ export interface UpdateEmployee {
   reliever: string | null;
   file: File | null;
   avatar: File | null;
-}
-
-export interface EmployeeState {
-  employee: Employee | null;
-  actions: {
-    setAuthEmployee: (employee: Employee | null) => Promise<void>;
-    getAuthEmployee: () => Promise<void>;
-  };
-}
-
-export interface EmployeeSetFunction {
-  (
-    state:
-      | Partial<EmployeeState>
-      | ((state: EmployeeState) => Partial<EmployeeState>)
-  ): void;
 }

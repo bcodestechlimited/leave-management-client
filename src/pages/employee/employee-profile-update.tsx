@@ -5,11 +5,11 @@ import FileUpload from "@/components/file-upload";
 import { SearchableDropdown } from "@/components/searchable-dropdown";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { handleFetchEmployees, handleFetchLineManagers } from "@/lib/utils";
 import { updateEmployeeProfileAPI } from "@/api/employee.api";
 import { toast } from "sonner";
-import { useEmployeeActions, useEmployeeStore } from "@/store/useEmployeeStore";
+import { useEmployeeStore } from "@/store/use-employee-store";
 import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import InviteModal from "./modals/employee-invite";
@@ -31,7 +31,6 @@ export interface FormInputs {
 
 export default function EmployeeProfileUpdate() {
   const { employee } = useEmployeeStore();
-  const { setAuthEmployee } = useEmployeeActions();
 
   const navigate = useNavigate();
 
@@ -39,6 +38,8 @@ export default function EmployeeProfileUpdate() {
   const [accountType, setAccountType] = useState<"employee" | "lineManager">(
     "employee"
   );
+
+  const queryClient = useQueryClient();
 
   const openInviteModal = () => {
     setIsInviteModalOpen(true);
@@ -73,11 +74,11 @@ export default function EmployeeProfileUpdate() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: updateEmployeeProfileAPI,
-    onSuccess: ({ employee, leaveBalances }) => {
-      setAuthEmployee({ ...employee, leaveBalances });
+    onSuccess: () => {
       // getAuthEmployee();
       toast.success("Profile updated successfully");
       navigate("/dashboard/employee/profile");
+      queryClient.invalidateQueries({ queryKey: ["auth-employee"] });
     },
     onError: (error) => {
       if (error instanceof Error) {
@@ -191,7 +192,7 @@ export default function EmployeeProfileUpdate() {
                   "Search for a line manager"
                 }
                 fetchOptions={handleFetchLineManagers}
-                onChange={({value}) => {
+                onChange={({ value }) => {
                   console.log("Selected Level ID:", value);
                   setValue("lineManager", value);
                   clearErrors(["lineManager"]);
@@ -231,7 +232,7 @@ export default function EmployeeProfileUpdate() {
                   "Search for a reliever"
                 }
                 fetchOptions={handleFetchEmployees}
-                onChange={({value}) => {
+                onChange={({ value }) => {
                   console.log("Selected Level ID:", value);
                   setValue("reliever", value);
                   clearErrors(["reliever"]);

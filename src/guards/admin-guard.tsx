@@ -1,21 +1,17 @@
 import { AuthLoader } from "@/components/loader";
-import { useAdminActions, useAdminStore } from "@/store/useAdminStore";
-import { useEffect } from "react";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { useAuthAdmin } from "@/hooks/use-auth-admin";
+import { Navigate, Outlet } from "react-router-dom";
 
 export default function AdminGuard() {
-  const { admin, isFetchingAdmin } = useAdminStore();
-  const { getAdmin } = useAdminActions();
+  const { data: admin, isLoading, isError } = useAuthAdmin();
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    getAdmin(navigate);
-  }, [getAdmin, navigate]);
-
-  if (isFetchingAdmin || !admin) {
-    return <AuthLoader isLoading={isFetchingAdmin} />;
+  if (isLoading) {
+    return <AuthLoader isLoading={isLoading} />;
   }
 
-  return admin ? <Outlet /> : <Navigate to="/admin/login" replace />;
+  if (!admin || isError) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  return <Outlet />;
 }

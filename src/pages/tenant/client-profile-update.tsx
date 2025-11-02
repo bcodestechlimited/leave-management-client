@@ -6,42 +6,42 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useTenantStore, useTenantActions } from "@/store/useTenantStore";
-import { updateTenantProfile } from "@/api/tenant.api";
-import { Tenant } from "@/types/tenant.types";
+import { updateClientProfile } from "@/api/tenant.api";
+import { useClientActions, useClientStore } from "@/store/use-client-store";
+import { Client } from "@/types/tenant.types";
 
-export interface TenantFormInputs {
+export interface ClientFormInputs {
   name: string | null;
   email: string;
   logo: FileList | null;
   color: string;
 }
 
-export default function TenantProfileUpdate() {
-  const { tenant } = useTenantStore();
-  const { setTenant } = useTenantActions();
+export default function ClientProfileUpdate() {
+  const { client } = useClientStore();
+  const { setClient } = useClientActions();
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TenantFormInputs>({
+  } = useForm<ClientFormInputs>({
     defaultValues: {
-      name: tenant?.name,
-      email: tenant?.email,
+      name: client?.name,
+      email: client?.email,
       logo: null,
-      color: tenant?.color,
+      color: client?.color,
     },
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: updateTenantProfile,
-    onSuccess: ({ tenant }) => {
-      console.log({ tenant });
+    mutationFn: updateClientProfile,
+    onSuccess: ({ client }) => {
+      console.log({ client });
 
-      setTenant(tenant as Tenant);
-      navigate("/dashboard/tenant/profile");
+      setClient(client as Client);
+      navigate("/dashboard/client/profile");
     },
     onError: (error) => {
       if (error instanceof Error) {
@@ -51,12 +51,12 @@ export default function TenantProfileUpdate() {
     },
   });
 
-  const onSubmit = (data: TenantFormInputs) => {
+  const onSubmit = (data: ClientFormInputs) => {
     const logo = data.logo?.[0];
 
     const payload = {
       ...data,
-      logo: logo || null,
+      logo: logo || undefined,
     };
 
     console.log({ payload });

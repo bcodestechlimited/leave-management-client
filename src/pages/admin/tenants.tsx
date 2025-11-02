@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import AddTenantModal from "./modal/add-tenant-modal";
 import { ClipboardCopy } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { getAllTenants } from "@/api/admin.api";
 import { useSearchParams } from "react-router-dom";
 import DataTable from "@/components/table";
+import { getAllClients } from "@/api/admin.api";
+import AddClientModal from "./modal/add-client-modal";
 
 export default function Tenants() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,9 +16,11 @@ export default function Tenants() {
   const limit = parseInt(searchParams.get("limit") || "10", 10);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["tenants", { page, limit }],
-    queryFn: () => getAllTenants({ page, limit }),
+    queryKey: ["clients", { page, limit }],
+    queryFn: () => getAllClients({ page, limit }),
   });
+
+  console.log({ isLoading, data });
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -29,7 +31,7 @@ export default function Tenants() {
       render: (row: any) => <span>{row.name || "N/A"}</span>,
     },
     {
-      header: "Tenant Id",
+      header: "Client Id",
       render: (row: any) => (
         <span className="flex gap-2">
           {row._id}
@@ -74,19 +76,19 @@ export default function Tenants() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-lg font-semibold">Tenants</h1>
-        <Button onClick={openModal}>Add New Tenant</Button>
+        <h1 className="text-lg font-semibold">Clients</h1>
+        <Button onClick={openModal}>Add New Client</Button>
       </div>
 
       <DataTable
         columns={columns}
-        data={data?.tenants || []}
+        data={data?.clients || []}
         isLoading={isLoading}
-        noDataMessage="No tenants found."
+        noDataMessage="No clients found."
         pagination={data?.pagination}
       />
 
-      <AddTenantModal isOpen={isModalOpen} onClose={closeModal} />
+      <AddClientModal isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );
 }

@@ -22,17 +22,17 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import type { Employee } from "@/types/employee.types";
 import AddLineManagerModal from "./modals/add-line-manager";
 import { toast } from "sonner";
+import { IEmployee } from "@/types/employee.types";
 
 export default function LineManagers() {
   const [searchParams] = useSearchParams();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [employeeToEdit, setEmployeeToEdit] = useState<Employee | null>(null);
+  const [employeeToEdit, setEmployeeToEdit] = useState<IEmployee | null>(null);
   const [isAddManagerModalOpen, setIsAddManagerModalOpen] = useState(false);
 
-  const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(
+  const [employeeToDelete, setEmployeeToDelete] = useState<IEmployee | null>(
     null
   );
 
@@ -48,7 +48,7 @@ export default function LineManagers() {
     },
   });
 
-  const handleEditClick = (employee: Employee) => {
+  const handleEditClick = (employee: IEmployee) => {
     setEmployeeToEdit(employee);
     setIsEditModalOpen(true);
   };

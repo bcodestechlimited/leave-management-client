@@ -1,5 +1,5 @@
 import Breadcrumb from "@/components/bread-crumb";
-import TenantSidebar from "@/components/tenant-sidebar";
+import TenantSidebar from "@/components/client-sidebar";
 import { Outlet } from "react-router-dom";
 
 export default function TenantLayout() {

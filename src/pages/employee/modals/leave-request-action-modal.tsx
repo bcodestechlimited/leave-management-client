@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { formatDate, getEmployeeFullName } from "@/lib/utils";
 import { Leave } from "@/types/leave.types";
 import { useState } from "react";
-import { Employee } from "@/types/employee.types";
+import { IEmployee } from "@/types/employee.types";
 
 interface LeaveActionModalProps {
   isOpen: boolean;
@@ -64,11 +64,11 @@ export default function LeaveRequestActionModal({
           <div>
             <p className="text-sm font-medium mb-2">
               <strong> Employee: </strong>
-              {getEmployeeFullName(leaveRequest?.employee as Employee)}
+              {getEmployeeFullName(leaveRequest?.employee as IEmployee)}
             </p>
             <p className="text-sm font-medium mb-2">
               <strong> Line Manager: </strong>
-              {getEmployeeFullName(leaveRequest?.lineManager as Employee)}
+              {getEmployeeFullName(leaveRequest?.lineManager as IEmployee)}
             </p>
             <p className="text-sm font-medium mb-2">
               <strong>Duration: </strong> {leaveRequest?.duration} Days

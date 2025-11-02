@@ -9,12 +9,12 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Employee } from "@/types/employee.types";
+import { IEmployee } from "@/types/employee.types";
 
 interface ModalPrope {
   isOpen: boolean;
   onClose: () => void;
-  employeeId: Employee;
+  employeeId: IEmployee;
 }
 
 export default function DeleteEmployeeModal({

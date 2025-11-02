@@ -1,58 +1,60 @@
-import { FC } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/modal";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addTenant } from "@/api/admin.api";
 import { toast } from "sonner";
+import { addClient } from "@/api/admin.api";
 
-interface AddTenantFormValues {
+interface AddClientFormValues {
   name: string;
   email: string;
   logo: FileList;
   color: string;
 }
 
-interface AddTenantModalProps {
+interface AddClientModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const AddTenantModal: FC<AddTenantModalProps> = ({ isOpen, onClose }) => {
+export default function AddClientModal({
+  isOpen,
+  onClose,
+}: AddClientModalProps) {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<AddTenantFormValues>();
+  } = useForm<AddClientFormValues>();
 
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: addTenant,
+    mutationFn: addClient,
     onSuccess: () => {
       toast.success("Client added sucessfully");
       reset();
       onClose();
-      queryClient.invalidateQueries({ queryKey: ["tenants"] });
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
     },
     onError: (error) => {
       console.log(error);
-      toast.error(error.message || "Failed to add tenant");
+      toast.error(error.message || "Failed to add client");
     },
   });
 
-  const handleFormSubmit: SubmitHandler<AddTenantFormValues> = (data) => {
+  const handleFormSubmit: SubmitHandler<AddClientFormValues> = (data) => {
     const logo = data.logo[0];
-    const newTenant = { ...data, logo };
-    mutate(newTenant);
+    const newClient = { ...data, logo };
+    mutate(newClient);
   };
 
   return (
-    <Modal heading="Add Tenant" isOpen={isOpen} onClose={onClose}>
+    <Modal heading="Add Client" isOpen={isOpen} onClose={onClose}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className="p-4">
-        <h2 className="text-lg font-semibold mb-4">Add New Tenant</h2>
+        <h2 className="text-lg font-semibold mb-4">Add New Client</h2>
         <div className="mb-4">
           <label className="block text-sm font-medium">Name</label>
           <Input
@@ -96,11 +98,9 @@ const AddTenantModal: FC<AddTenantModalProps> = ({ isOpen, onClose }) => {
           )}
         </div>
         <Button type="submit" disabled={isPending} className="w-full">
-          {isPending ? "Submitting..." : "Add Tenant"}
+          {isPending ? "Submitting..." : "Add Client"}
         </Button>
       </form>
     </Modal>
   );
-};
-
-export default AddTenantModal;
+}

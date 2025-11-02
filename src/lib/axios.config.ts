@@ -1,8 +1,8 @@
 import axios, { AxiosError } from "axios";
 
 const apiUrl: string =
-import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
-  // import.meta.env.VITE_API_URL || "http://localhost:8081/api/v1";
+  import.meta.env.VITE_API_URL || "http://localhost:8081/api/v1";
+// import.meta.env.VITE_API_URL || "http://localhost:8081/api/v1";
 
 const axiosInstance = axios.create({
   baseURL: apiUrl,
@@ -14,10 +14,13 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers!.Authorization = `Bearer ${token}`;
     }
-    const tenantId = localStorage.getItem("tenant-id");
-    if (tenantId) {
-      config.headers["x-tenant-id"] = `${tenantId}`;
+    const clientId = localStorage.getItem("client-id");
+    if (clientId) {
+      config.headers["x-client-id"] = `${clientId}`;
     }
+
+    console.log({ token, clientId });
+
     return config;
   },
   (error: AxiosError) => {

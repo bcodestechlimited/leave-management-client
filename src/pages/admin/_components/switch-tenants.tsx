@@ -5,30 +5,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getAllTenants } from "@/api/admin.api";
 import { useQuery } from "@tanstack/react-query";
 import { Tenant } from "@/types/tenant.types";
 import { Loader } from "@/components/loader";
+import { getAllClients } from "@/api/admin.api";
 
 interface SwitchTenantsProps {
-  tenantId: string;
-  setTenantId: (tenantId: string) => void;
+  clientId: string;
+  setClientId: (clientId: string) => void;
 }
 
 export default function SwitchTenants({
-  tenantId,
-  setTenantId,
+  clientId,
+  setClientId,
 }: SwitchTenantsProps) {
   const {
-    data: tenantsData,
-    isLoading: tenantsLoading,
+    data: clientsData,
+    isLoading: clientsLoading,
     isError: tenantsError,
   } = useQuery({
-    queryFn: () => getAllTenants({ page: 1, limit: 10 }),
-    queryKey: ["tenants"],
+    queryFn: () => getAllClients({ page: 1, limit: 10 }),
+    queryKey: ["clients"],
   });
 
-  if (tenantsLoading) return <Loader isLoading={tenantsLoading} />;
+  if (clientsLoading) return <Loader isLoading={clientsLoading} />;
 
   if (tenantsError)
     return (
@@ -40,17 +40,17 @@ export default function SwitchTenants({
   return (
     <div className="flex justify-end">
       <Select
-        value={tenantId || ""}
+        value={clientId || ""}
         onValueChange={(val: string) => {
-          setTenantId(val);
-          localStorage.setItem("tenant-id", val);
+          setClientId(val);
+          localStorage.setItem("client-id", val);
         }}
       >
         <SelectTrigger className="w-fit gap-4">
-          <SelectValue placeholder={"Select Tenant"} className="px-12" />
+          <SelectValue placeholder={"Select Client"} className="px-12" />
         </SelectTrigger>
         <SelectContent>
-          {tenantsData?.tenants.map((option: Tenant) => (
+          {clientsData?.clients.map((option: Tenant) => (
             <SelectItem key={option._id} value={option._id}>
               {option.name}
             </SelectItem>

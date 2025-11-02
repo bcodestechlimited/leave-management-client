@@ -57,15 +57,15 @@ function App() {
       element: <TenantLogin />,
     },
     {
-      path: "/tenant/forgot-password",
+      path: "/client/forgot-password",
       element: <TenantForgotPassword />,
     },
     {
-      path: "/tenant/reset-password",
+      path: "/client/reset-password",
       element: <TenantResetPassword />,
     },
     {
-      path: "/dashboard/tenant",
+      path: "/dashboard/client",
       element: <TenantGuard />,
       children: [
         {
@@ -121,7 +121,7 @@ function App() {
     },
     //Eemployee Routes
     {
-      path: "/invite/:tenantId/:token/:email",
+      path: "/invite/:clientId/:token/:email",
       element: <EmployeeRegister />,
     },
     {

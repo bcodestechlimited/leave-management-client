@@ -5,7 +5,7 @@ export interface Tenant {
   logo: string;
 }
 
-export interface CreateTenant {
+export interface CreateClient {
   name: string;
   email: string;
   logo: File;

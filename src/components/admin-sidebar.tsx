@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useAdminActions, useAdminStore } from "@/store/useAdminStore";
+import { useAdminStore } from "@/store/use-admin-store";
 // import { useAdminActions, useAdminStore } from "@/store/useAdminStore";
 
 interface Submenu {
@@ -44,7 +44,6 @@ export default function AdminSidebar() {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const location = useLocation();
-  const { logout } = useAdminActions();
   const { admin } = useAdminStore();
 
   const navigate = useNavigate();
@@ -58,6 +57,11 @@ export default function AdminSidebar() {
 
   const toggleProfileDropdown = () => {
     setProfileDropdownOpen((prev) => !prev);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/admin/login");
   };
 
   return (
@@ -147,17 +151,17 @@ export default function AdminSidebar() {
           onClick={toggleProfileDropdown}
         >
           <div>
-            <p className="font-semibold text-sm">{admin.email}</p>
-            <p className="text-sm text-gray-500">{admin.role}</p>
+            {/* <p className="font-semibold text-sm">{admin.email}</p>
+            <p className="text-sm text-gray-500">{admin.role}</p> */}
           </div>
         </div>
 
         {profileDropdownOpen && (
           <div className="absolute bottom-16 w-full p-4 bg-white border shadow-md rounded-md">
             <div>
-              <p className="font-semibold">{admin.name}</p>
+              {/* <p className="font-semibold">{admin.name}</p>
               <p className="text-sm text-gray-500">{admin.role}</p>
-              <p className="text-sm text-gray-500">{admin.email}</p>
+              <p className="text-sm text-gray-500">{admin.email}</p> */}
             </div>
           </div>
         )}
@@ -170,7 +174,7 @@ export default function AdminSidebar() {
           variant="ghost"
           size="sm"
           className="w-full flex items-center justify-center space-x-2 text-gray-700 hover:bg-gray-100"
-          onClick={() => logout(navigate)}
+          onClick={() => handleLogout()}
         >
           <LogOut className="w-5 h-5" />
           <span>Logout</span>

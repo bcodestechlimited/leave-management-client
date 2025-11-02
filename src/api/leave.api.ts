@@ -27,7 +27,7 @@ export const getLeaveDetail = async (leaveId: string | undefined) => {
   }
 
   try {
-    const response = await axiosInstance.get(`/leave/leave-request/${leaveId}`);
+    const response = await axiosInstance.get(`/leave/${leaveId}`);
     console.log({ data: response.data });
 
     return response.data?.data;
@@ -198,7 +198,7 @@ export const getMonthlyLeaveReport = async (params: {
   endDate?: string;
 }) => {
   try {
-    const response = await axiosInstance.get<Blob>(`/tenant/leave-report`, {
+    const response = await axiosInstance.get<Blob>(`/admin/leave/report`, {
       params,
       responseType: "blob",
     });
@@ -206,8 +206,7 @@ export const getMonthlyLeaveReport = async (params: {
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message ||
-          "Failed to fetch analytics for leave requests"
+        error.response?.data?.message || "Failed to fetch leave report"
       );
     }
     throw error;

@@ -2,10 +2,33 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import axiosInstance from "./axios.config";
 import { Employee } from "@/types/employee.types";
+import { AxiosError } from "axios";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const handleAxiosError = (
+  error: any,
+  alternateMessage?: string
+): string => {
+  // console.log({ error: error.response?.data?.errors });
+
+  if (!error) {
+    throw new Error("An unknown error occurred");
+  }
+
+  if (error instanceof AxiosError && error.response?.status === 422) {
+    throw new Error(
+      error.response?.data?.errors[0].message || alternateMessage
+    );
+  }
+  if (error instanceof AxiosError) {
+    // console.log(error?.response?.data);
+    throw new Error(error.response?.data?.message || alternateMessage);
+  }
+  throw error;
+};
 
 export function formatDate(dateString: string) {
   // Helper function to get the ordinal suffix

@@ -17,14 +17,14 @@ import {
 import { updateEmployeeDetailsByTenant } from "@/api/tenant.api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Employee } from "@/types/employee.types";
 import { CustomDropdown } from "@/components/custom-dropdown";
 import { Label } from "@/components/ui/label";
+import { IEmployee } from "@/types/employee.types";
 
 interface EditEmployeeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  employee: Partial<Employee>;
+  employee: Partial<IEmployee>;
 }
 
 interface FormValues {
@@ -182,17 +182,17 @@ export default function EditEmployeeModal({
               Line Manager -{" "}
               <span className="text-muted-foreground font-semibold">
                 {" "}
-                {getEmployeeFullName(employee?.lineManager as Employee)}{" "}
+                {getEmployeeFullName(employee?.lineManager as IEmployee)}{" "}
               </span>
             </Label>
             <div className="flex items-center gap-2">
               <SearchableDropdown
                 searchInputPlaceholder="Search for a line manager"
                 placeholder={
-                  getEmployeeFullName(employee?.lineManager as Employee) ===
+                  getEmployeeFullName(employee?.lineManager as IEmployee) ===
                   "N/A"
                     ? "Search for a line manager"
-                    : getEmployeeFullName(employee?.lineManager as Employee)
+                    : getEmployeeFullName(employee?.lineManager as IEmployee)
                 }
                 fetchOptions={handleFetchLineManagers}
                 onChange={({ value }) => {
@@ -220,16 +220,16 @@ export default function EditEmployeeModal({
             <Label className="block text-sm font-medium mb-1">
               Reliever -{" "}
               <span className="text-muted-foreground font-semibold">
-                {getEmployeeFullName(employee?.reliever as Employee)}
+                {getEmployeeFullName(employee?.reliever as IEmployee)}
               </span>
             </Label>
             <div className="flex items-center gap-2">
               <SearchableDropdown
                 searchInputPlaceholder="Search for a reliever"
                 placeholder={
-                  getEmployeeFullName(employee?.reliever as Employee) === "N/A"
+                  getEmployeeFullName(employee?.reliever as IEmployee) === "N/A"
                     ? "Search for a reliever"
-                    : getEmployeeFullName(employee?.reliever as Employee)
+                    : getEmployeeFullName(employee?.reliever as IEmployee)
                 }
                 fetchOptions={handleFetchEmployees}
                 onChange={({ value }) => {

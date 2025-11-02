@@ -15,15 +15,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Employee } from "@/types/employee.types";
 import DeleteEmployeeModal from "./modals/delete-employee-modal";
+import { IEmployee } from "@/types/employee.types";
 
 export default function Employee() {
   const [searchParams] = useSearchParams();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [employeeToEdit, setEmployeeToEdit] = useState<Employee | null>(null);
+  const [employeeToEdit, setEmployeeToEdit] = useState<IEmployee | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(
+  const [employeeToDelete, setEmployeeToDelete] = useState<IEmployee | null>(
     null
   );
 
@@ -38,7 +38,7 @@ export default function Employee() {
     },
   });
 
-  const handleEditClick = (employee: Employee) => {
+  const handleEditClick = (employee: IEmployee) => {
     setEmployeeToEdit(employee);
     setIsEditModalOpen(true);
   };
@@ -48,7 +48,7 @@ export default function Employee() {
     setIsEditModalOpen(false);
   };
 
-  const openDeleteModal = (employee: Employee) => {
+  const openDeleteModal = (employee: IEmployee) => {
     setEmployeeToDelete(employee);
     setIsDeleteModalOpen(true);
   };

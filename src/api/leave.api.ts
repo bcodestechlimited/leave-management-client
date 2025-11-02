@@ -7,7 +7,7 @@ import { IParams } from "@/interfaces/params.interface";
 // Leave Requests
 export const getAllLeaves = async (params: Params) => {
   try {
-    const response = await axiosInstance.get("/leave/leave-request", {
+    const response = await axiosInstance.get("/leave", {
       params,
     });
     return response.data?.data;
@@ -43,7 +43,7 @@ export const getLeaveDetail = async (leaveId: string | undefined) => {
 
 export const getEmployeeLeaves = async (params: Params) => {
   try {
-    const response = await axiosInstance.get("/leave/leave-request/employee", {
+    const response = await axiosInstance.get("/leave/employee", {
       params,
     });
     return response.data?.data;
@@ -59,7 +59,7 @@ export const getEmployeeLeaves = async (params: Params) => {
 
 export const applyForLeave = async (data: ApplyLeaveFormData) => {
   try {
-    const response = await axiosInstance.post("/leave/leave-request", data, {
+    const response = await axiosInstance.post("/leave", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -77,7 +77,7 @@ export const applyForLeave = async (data: ApplyLeaveFormData) => {
 
 export const fetchManagerLeaveRequest = async (params: IParams) => {
   try {
-    const response = await axiosInstance.get("/leave/leave-request/manager", {
+    const response = await axiosInstance.get("/leave/manager", {
       params,
     });
     return response.data?.data;
@@ -101,13 +101,10 @@ export const updateLeaveRequest = async ({
   reason: string;
 }) => {
   try {
-    const response = await axiosInstance.put(
-      `/leave/leave-request/${leaveId}`,
-      {
-        status,
-        reason,
-      }
-    );
+    const response = await axiosInstance.put(`/leave/${leaveId}`, {
+      status,
+      reason,
+    });
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -198,7 +195,7 @@ export const getMonthlyLeaveReport = async (params: {
   endDate?: string;
 }) => {
   try {
-    const response = await axiosInstance.get<Blob>(`/admin/leave/report`, {
+    const response = await axiosInstance.get<Blob>(`/leave/report`, {
       params,
       responseType: "blob",
     });

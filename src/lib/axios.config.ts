@@ -18,9 +18,6 @@ axiosInstance.interceptors.request.use(
     if (clientId) {
       config.headers["x-client-id"] = `${clientId}`;
     }
-
-    console.log({ token, clientId });
-
     return config;
   },
   (error: AxiosError) => {

@@ -5,12 +5,12 @@ import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/label";
-import { tenantLogin, validateTenantID } from "@/api/tenant.api";
+import { clientLogin, validateClientId } from "@/api/tenant.api";
 import { toast } from "sonner";
-import { useTenantActions } from "@/store/useTenantStore";
+import { useClientActions } from "@/store/use-client-store";
 
-type TenantIdFormInputs = {
-  tenantId: string;
+type ClientIdFormInputs = {
+  clientId: string;
 };
 
 type LoginFormInputs = {
@@ -18,19 +18,19 @@ type LoginFormInputs = {
   password: string;
 };
 
-export default function TenantLogin() {
-  const [isTenantValid, setIsTenantValid] = useState(false);
+export default function ClientLogin() {
+  const [isClientIdValid, setIsClientIdValid] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard/tenant";
+  const from = location.state?.from?.pathname || "/dashboard/client";
 
-  const { setTenant } = useTenantActions();
+  const { setClient } = useClientActions();
 
   const {
-    register: registerTenant,
-    handleSubmit: handleTenantSubmit,
-    formState: { errors: tenantErrors },
-  } = useForm<TenantIdFormInputs>();
+    register: registerClient,
+    handleSubmit: handleClientSubmit,
+    formState: { errors: clientErrors },
+  } = useForm<ClientIdFormInputs>();
 
   const {
     register: registerLogin,
@@ -38,11 +38,12 @@ export default function TenantLogin() {
     formState: { errors: loginErrors },
   } = useForm<LoginFormInputs>();
 
-  const validateTenantMutation = useMutation({
-    mutationFn: (tenantId: string) => validateTenantID({ tenantId }),
-    onSuccess: () => {
+  const validateClientIdMutation = useMutation({
+    mutationFn: (clientId: string) => validateClientId({ clientId }),
+    onSuccess: (data) => {
       toast.success(`Client ID validated successfully!`);
-      setIsTenantValid(true);
+      localStorage.setItem("client-id", data.client._id);
+      setIsClientIdValid(true);
     },
     onError: (error) => {
       console.error("Tenant validation error:", error);
@@ -51,21 +52,21 @@ export default function TenantLogin() {
   });
 
   const loginMutation = useMutation({
-    mutationFn: (data: LoginFormInputs) => tenantLogin(data),
-    onSuccess: ({ tenant }) => {
-      console.log(tenant);
-      setTenant(tenant || null);
+    mutationFn: (data: LoginFormInputs) => clientLogin(data),
+    onSuccess: ({ client }) => {
+      console.log(client);
+      setClient(client || null);
       toast.success(`Login successful`);
       navigate(from, { replace: true });
     },
     onError: (error) => {
-      console.error("Tenant login error:", error);
+      console.error("Client login error:", error);
       toast.error(error.message);
     },
   });
 
-  const validateTenantId = (data: TenantIdFormInputs) => {
-    validateTenantMutation.mutate(data.tenantId);
+  const handleValidateClientId = async (data: ClientIdFormInputs) => {
+    validateClientIdMutation.mutateAsync(data.clientId);
   };
 
   const handleLogin = (data: LoginFormInputs) => {
@@ -76,43 +77,43 @@ export default function TenantLogin() {
     <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold mb-6 text-center">Client Login</h2>
 
-      {/* Tenant ID Input */}
+      {/* Client ID Input */}
       <form
-        onSubmit={handleTenantSubmit(validateTenantId)}
+        onSubmit={handleClientSubmit(handleValidateClientId)}
         className="space-y-4"
       >
         <div>
-          <Label htmlFor="tenantId" className="block mb-1 font-medium">
+          <Label htmlFor="clientId" className="block mb-1 font-medium">
             Client ID
           </Label>
           <Input
-            id="tenantId"
+            id="clientId"
             type="text"
-            {...registerTenant("tenantId", {
+            {...registerClient("clientId", {
               required: "Client ID is required",
             })}
             placeholder="Enter your client ID"
             className="w-full"
           />
-          {tenantErrors.tenantId && (
+          {clientErrors.clientId && (
             <p className="text-red-500 text-sm mt-1">
-              {tenantErrors.tenantId.message}
+              {clientErrors.clientId.message}
             </p>
           )}
         </div>
         <Button
           type="submit"
-          disabled={validateTenantMutation.isPending || isTenantValid}
+          disabled={validateClientIdMutation.isPending || isClientIdValid}
           className="w-full"
         >
-          {validateTenantMutation.isPending
+          {validateClientIdMutation.isPending
             ? "Validating..."
             : "Validate Client ID"}
         </Button>
       </form>
 
       {/* Login Form */}
-      {isTenantValid && (
+      {isClientIdValid && (
         <form
           onSubmit={handleLoginSubmit(handleLogin)}
           className="space-y-4 mt-6"
@@ -173,7 +174,7 @@ export default function TenantLogin() {
         </form>
       )}
       <div className="pt-4 text-end">
-        <Link to="/tenant/forgot-password" className="font-semibold underline">
+        <Link to="/client/forgot-password" className="font-semibold underline">
           Forgot Password?
         </Link>
       </div>

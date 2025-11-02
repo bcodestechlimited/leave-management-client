@@ -4,7 +4,6 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useAdminStore } from "@/store/use-admin-store";
 // import { useAdminActions, useAdminStore } from "@/store/useAdminStore";
 
 interface Submenu {
@@ -27,8 +26,8 @@ const routes: Route[] = [
     icon: <LayoutDashboardIcon className="w-5 h-5" />,
   },
   {
-    name: "Tenants",
-    path: "/dashboard/admin/tenants",
+    name: "Clients",
+    path: "/dashboard/admin/clients",
     icon: <Users className="w-5 h-5" />,
     // submenu: [],
   },
@@ -44,7 +43,7 @@ export default function AdminSidebar() {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const location = useLocation();
-  const { admin } = useAdminStore();
+  // const { admin } = useAdminStore();
 
   const navigate = useNavigate();
 

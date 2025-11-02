@@ -1,8 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import axiosInstance from "./axios.config";
-import { Employee } from "@/types/employee.types";
 import { AxiosError } from "axios";
+import { IEmployee } from "@/types/employee.types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -83,7 +83,7 @@ export const handleFetchEmployees = async (search: string) => {
     );
     const employees = response?.data?.data?.employees;
 
-    return employees.map((employee: Employee) => {
+    return employees.map((employee: IEmployee) => {
       const names = [employee.firstname, employee.middlename, employee.surname]
         .filter(Boolean) // remove null/undefined middlename
         .join(" ");
@@ -107,7 +107,7 @@ export const handleFetchLineManagers = async (search: string) => {
     );
     const employees = response?.data?.data?.employees;
 
-    return employees.map((employee: Employee) => {
+    return employees.map((employee: IEmployee) => {
       const names = [employee.firstname, employee.middlename, employee.surname]
         .filter(Boolean)
         .join(" ");
@@ -125,19 +125,20 @@ export const handleFetchLineManagers = async (search: string) => {
 export const handleFetchBalances = async (search: string) => {
   try {
     const response = await axiosInstance.get(
-      `/leave/balance?search=${encodeURIComponent(search)}&limit=5`
+      `/leave-balance?search=${encodeURIComponent(search)}&limit=5`
     );
 
-    const leaveBalance = response?.data?.data?.leaveBalance;
+    const leaveBalances = response?.data?.data?.leaveBalances;
+    console.log(leaveBalances);
 
-    return leaveBalance?.map(
+    return leaveBalances?.map(
       (item: {
-        leaveTypeId: string;
+        _id: string;
         balance: string;
-        leaveTypeDetails: { name: string };
+        leaveType: { _id: string; name: string; defaultBalance: number };
       }) => ({
-        value: item.leaveTypeId,
-        label: `${item.leaveTypeDetails.name} - ${item.balance} days left`,
+        value: item.leaveType._id,
+        label: `${item.leaveType.name} - ${item.balance} days left`,
       })
     );
   } catch {
@@ -173,7 +174,7 @@ export function capitalizeWords(str: string): string {
     .join(" ");
 }
 
-export const getEmployeeFullNameWithEmail = (employee: Employee) => {
+export const getEmployeeFullNameWithEmail = (employee: IEmployee) => {
   if (!employee) return "N/A";
   const { firstname, middlename, surname, email } = employee;
   return (
@@ -181,7 +182,7 @@ export const getEmployeeFullNameWithEmail = (employee: Employee) => {
   );
 };
 
-export const getEmployeeFullName = (employee: Employee) => {
+export const getEmployeeFullName = (employee: IEmployee) => {
   if (!employee) return "N/A";
   const { firstname, middlename, surname } = employee;
   return [firstname, middlename, surname].filter(Boolean).join(" ");

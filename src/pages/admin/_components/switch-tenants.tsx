@@ -6,9 +6,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
-import { Tenant } from "@/types/tenant.types";
 import { Loader } from "@/components/loader";
 import { getAllClients } from "@/api/admin.api";
+import { Client } from "@/types/tenant.types";
 
 interface SwitchTenantsProps {
   clientId: string;
@@ -50,7 +50,7 @@ export default function SwitchTenants({
           <SelectValue placeholder={"Select Client"} className="px-12" />
         </SelectTrigger>
         <SelectContent>
-          {clientsData?.clients.map((option: Tenant) => (
+          {clientsData?.clients.map((option: Client) => (
             <SelectItem key={option._id} value={option._id}>
               {option.name}
             </SelectItem>

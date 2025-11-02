@@ -1,22 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { useEmployeeActions, useEmployeeStore } from "@/store/useEmployeeStore";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEmployeeStore } from "@/store/use-employee-store";
 import { cn, getEmployeeFullNameWithEmail } from "@/lib/utils";
 import { updateEmployeeProfileAPI } from "@/api/employee.api";
 import { toast } from "sonner";
 import { UserCheck, UserX } from "lucide-react";
+import { leaveBalanceService } from "@/api/leave-balance.api";
 
 export default function EmployeeProfile() {
   const { employee } = useEmployeeStore();
-  const { getAuthEmployee } = useEmployeeActions();
 
-  // const { data: leaveBalance } = useQuery({
-  //   queryKey: ["leaveBalance"],
-  //   queryFn: getEmployeeLeaveBalance,
-  // });
-
-  // console.log(leaveBalance);
+  const {
+    data: leaveBalances,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["leave-balance"],
+    queryFn: () => leaveBalanceService.getLeaveBalances(),
+    retry: false,
+  });
 
   const handleDownload = (url: string) => {
     const link = document.createElement("a");
@@ -29,7 +32,6 @@ export default function EmployeeProfile() {
     mutationFn: updateEmployeeProfileAPI,
     onSuccess: () => {
       toast.success("Profile updated successfully");
-      getAuthEmployee();
     },
     onError: (error) => {
       if (error instanceof Error) {
@@ -72,7 +74,7 @@ export default function EmployeeProfile() {
         <Link to={"/dashboard/employee/profile/update"}>
           <Button
             style={{
-              backgroundColor: employee?.tenantId?.color || "black",
+              backgroundColor: employee?.clientId?.color || "black",
             }}
           >
             Update Profile
@@ -159,14 +161,17 @@ export default function EmployeeProfile() {
           <div className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Leave Balances</h2>
             <ul>
-              {employee?.leaveBalances && employee?.leaveBalances.length > 0 ? (
-                employee?.leaveBalances.map((balance: any, index: number) => (
+              {!isLoading &&
+              !isError &&
+              leaveBalances &&
+              leaveBalances?.length > 0 ? (
+                leaveBalances.map((leaveBalance: any, index: number) => (
                   <li key={index} className="mb-4">
                     <div className="flex justify-between">
                       <span className="font-semibold capitalize text-gray-600">
-                        {balance.leaveTypeDetails?.name ?? "N/A"}
+                        {leaveBalance.leaveType?.name ?? "N/A"}
                       </span>
-                      <span>{balance.balance ?? 0} days</span>
+                      <span>{leaveBalance.balance ?? 0} days</span>
                     </div>
                   </li>
                 ))

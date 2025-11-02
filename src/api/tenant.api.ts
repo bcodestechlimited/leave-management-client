@@ -1,6 +1,7 @@
 import axiosInstance from "@/lib/axios.config";
+import { useClientStore } from "@/store/use-client-store";
 import { Params } from "@/types/params.types";
-import { UpdateTenant } from "@/types/tenant.types";
+import { UpdateClient } from "@/types/tenant.types";
 import { AxiosError } from "axios";
 import { NavigateFunction } from "react-router-dom";
 
@@ -42,7 +43,10 @@ export const deleteEmployeeByTenant = async (employeeId: string) => {
 //Invites
 export const fetchAllInvites = async (params: Params) => {
   try {
-    const response = await axiosInstance.get(`/tenant/link`, { params });
+    const response = await axiosInstance.get(`/link`, { params });
+
+    console.log({ response });
+
     const links = response.data?.data?.links;
     const pagination = response.data?.data?.pagination;
 
@@ -95,18 +99,20 @@ export const bulkInvite = async (payload: any) => {
 };
 
 //Auth Actions
-export const tenantLogin = async (payload: any) => {
+export const clientLogin = async (payload: any) => {
   console.log(payload);
 
   try {
-    const response = await axiosInstance.post(`/tenant/auth/signin`, payload);
+    const response = await axiosInstance.post(`/client/auth/signin`, payload);
     const token = response?.data?.data?.token;
-    const tenant = response?.data?.data?.tenant;
+    const client = response?.data?.data?.client;
 
-    console.log({ token, tenant });
+    console.log({ token, client });
 
     localStorage.setItem("token", token);
-    localStorage.setItem("tenant-id", tenant._id);
+    localStorage.setItem("client-id", client._id);
+
+    useClientStore.getState().actions.setClient(client);
 
     return response.data?.data;
   } catch (error) {
@@ -117,11 +123,11 @@ export const tenantLogin = async (payload: any) => {
   }
 };
 
-export const updateTenantProfile = async (payload: UpdateTenant) => {
+export const updateClientProfile = async (payload: UpdateClient) => {
   console.log(payload);
 
   try {
-    const response = await axiosInstance.put(`/tenant/auth`, payload, {
+    const response = await axiosInstance.put(`/client/auth`, payload, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -130,7 +136,7 @@ export const updateTenantProfile = async (payload: UpdateTenant) => {
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to update tenant profile"
+        error.response?.data?.message || "Failed to update client profile"
       );
     }
     throw error;
@@ -197,11 +203,9 @@ export const tenantResetPassword = async (payload: {
 };
 
 //Public
-export const validateTenantID = async (payload: { tenantId: string }) => {
-  console.log(payload);
-
+export const validateClientId = async (payload: { clientId: string }) => {
   try {
-    const response = await axiosInstance.get(`/tenant/${payload.tenantId}`);
+    const response = await axiosInstance.get(`/client/${payload.clientId}`);
     return response.data?.data;
   } catch (error) {
     if (error instanceof AxiosError) {

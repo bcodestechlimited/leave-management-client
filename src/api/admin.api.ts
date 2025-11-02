@@ -1,4 +1,5 @@
 import axiosInstance from "@/lib/axios.config";
+import { useEmployeeStore } from "@/store/use-employee-store";
 import { Params } from "@/types/params.types";
 import { CreateClient } from "@/types/tenant.types";
 import { AxiosError } from "axios";
@@ -15,7 +16,9 @@ export const adminLoginAsEmployee = async (payload: {
 
     const token = response?.data?.data?.token;
     const clientId = response?.data?.data?.employee?.clientId;
-    // const employee = response?.data?.data?.employee;
+    const employee = response?.data?.data?.employee;
+
+    useEmployeeStore.getState().actions.setEmployee(employee);
 
     localStorage.setItem("token", token);
     localStorage.setItem("client-id", clientId);
@@ -119,7 +122,7 @@ export const updateLeaveRequestForAdmin = async ({
 }) => {
   try {
     const response = await axiosInstance.put(
-      `/admin/leave/leave-request/${leaveId}`,
+      `/admin/leave/${leaveId}`,
       {
         status,
         reason,

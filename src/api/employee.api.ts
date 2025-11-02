@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import axiosInstance from "../lib/axios.config";
 import { UpdateEmployee } from "@/types/employee.types";
 import { Params } from "@/types/params.types";
-import { useEmployeeStore } from "@/store/useEmployeeStore";
+import { useEmployeeStore } from "@/store/use-employee-store";
 
 export const getAllEmployees = async (params: Params) => {
   try {
@@ -66,7 +66,7 @@ export const acceptInvite = async (payload: {
   token: string;
 }) => {
   try {
-    localStorage.setItem("tenant-id", payload.tenantId);
+    localStorage.setItem("client-id", payload.tenantId);
     const response = await axiosInstance.put(
       `/employee/invite?token=${payload.token}`
     );
@@ -115,7 +115,7 @@ export const employeeSignUp = async (payload: {
     // const employee = response?.data?.data?.employee;
 
     localStorage.setItem("token", token);
-    localStorage.setItem("tenant-id", tenantId);
+    localStorage.setItem("client-id", tenantId);
 
     return response.data;
   } catch (error) {
@@ -135,7 +135,9 @@ export const employeeSignIn = async (payload: {
 
     const token = response?.data?.data?.token;
     const tenantId = response?.data?.data?.employee?.tenantId;
-    // const employee = response?.data?.data?.employee;
+    const employee = response?.data?.data?.employee;
+
+    useEmployeeStore.getState().actions.setEmployee(employee);
 
     localStorage.setItem("token", token);
     localStorage.setItem("tenant-id", tenantId);
@@ -178,10 +180,6 @@ export const updateEmployeeProfileAPI = async (
 
     const { employee, leaveBalances } = response?.data?.data;
     console.log({ employee, leaveBalances });
-    useEmployeeStore.getState().actions.setAuthEmployee({
-      ...employee,
-      leaveBalances,
-    });
     return { employee, leaveBalances };
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -255,7 +253,10 @@ export const InviteAndAddEmployee = async (payload: any) => {
 
 export const addLineManager = async (payload: any) => {
   try {
-    const response = await axiosInstance.post(`/tenant/line-manager`, payload);
+    const response = await axiosInstance.post(
+      `/employee/add/line-manager`,
+      payload
+    );
 
     return response.data;
   } catch (error) {

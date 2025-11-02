@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react"; // Import Eye and EyeOff icons
 import { resetPassword } from "@/api/employee.api";
 import { toast } from "sonner";
@@ -17,11 +17,11 @@ interface ResetPasswordFormInputs {
 export default function EmployeeResetPassword() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [searchParams, _] = useSearchParams();
 
   const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const token = queryParams.get("token") || "";
+
+  const token = searchParams.get("token") || "";
 
   const {
     register,
@@ -46,6 +46,11 @@ export default function EmployeeResetPassword() {
 
   const onSubmit: SubmitHandler<ResetPasswordFormInputs> = async (data) => {
     if (data.newPassword !== data.confirmPassword) {
+      return;
+    }
+
+    if (!token) {
+      toast.error("Link is broken or missing required parameters.");
       return;
     }
 

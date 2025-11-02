@@ -76,7 +76,7 @@ export default function Tenants() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-lg font-semibold">Tenants</h1>
+        <h1 className="text-lg font-semibold">Clients</h1>
         <Button onClick={openModal}>Add New Client</Button>
       </div>
 

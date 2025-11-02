@@ -7,7 +7,7 @@ import { formatDate, getStatusClasses } from "@/lib/utils";
 import { getEmployeeLeaves } from "@/api/leave.api";
 import { Link, useSearchParams } from "react-router-dom";
 import DataTable from "@/components/table";
-import { useEmployeeStore } from "@/store/useEmployeeStore";
+import { useEmployeeStore } from "@/store/use-employee-store";
 
 export default function EmployeeLeave() {
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);

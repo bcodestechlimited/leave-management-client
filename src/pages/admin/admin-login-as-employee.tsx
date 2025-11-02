@@ -14,8 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useEmployeeActions } from "@/store/useEmployeeStore";
-import { Employee } from "@/types/employee.types";
 import { adminLoginAsEmployee } from "@/api/admin.api";
 
 interface SignInFormInputs {
@@ -26,7 +24,6 @@ interface SignInFormInputs {
 
 export default function AdminLoginAsEmployee() {
   const navigate = useNavigate();
-  const { setAuthEmployee } = useEmployeeActions();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard/employee";
 
@@ -42,8 +39,7 @@ export default function AdminLoginAsEmployee() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: adminLoginAsEmployee,
-    onSuccess: (data) => {
-      setAuthEmployee(data.data.employee as Employee);
+    onSuccess: () => {
       toast.success("Login successful!");
       navigate(from, { replace: true });
     },

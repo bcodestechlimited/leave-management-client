@@ -8,7 +8,7 @@ import { Leave } from "@/types/leave.types";
 import LeaveRequestActionModal from "./modals/leave-request-action-modal";
 import { toast } from "sonner";
 import { Loader } from "@/components/loader";
-import { useEmployeeStore } from "@/store/useEmployeeStore";
+import { useEmployeeStore } from "@/store/use-employee-store";
 
 export default function EmployeeLeaveDetail() {
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);

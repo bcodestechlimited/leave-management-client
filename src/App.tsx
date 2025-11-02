@@ -1,10 +1,7 @@
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
-import TenantLogin from "./pages/tenant/tenant-login";
-import TenantGuard from "./guards/tenant-guard";
 import TenantLayout from "./layouts/tenant-layout";
-import TenantProfile from "./pages/tenant/tenant-profile";
 import TenantDashboard from "./pages/tenant/tenant-dashboard";
 import Employee from "./pages/tenant/employee";
 import EmployeeInvites from "./pages/tenant/employee-invites";
@@ -35,13 +32,16 @@ import EmployeeLeaveRequests from "./pages/employee/employee-leave-requests";
 import AllLeaves from "./pages/employee/employee-admin/all-leaves";
 import EmployeeDetail from "./pages/employee/employee-detail";
 import EmployeeLeaveDetail from "./pages/employee/employee-leave-detail";
-import TenantProfileUpdate from "./pages/tenant/tenant-profile-update";
 import ClientLeaveDetail from "./pages/tenant/leave/client-leave-detail";
 import LineManagers from "./pages/tenant/line-manager";
 import AdminDashboard from "./pages/admin/admin-dashboard";
 import AdminLeaves from "./pages/admin/admin-leaves";
 import AdminLeaveDetail from "./pages/admin/admin-leave-detail";
 import AdminLoginAsEmployee from "./pages/admin/admin-login-as-employee";
+import ClientLogin from "./pages/tenant/client-login";
+import ClientProfile from "./pages/tenant/client-profile";
+import ClientGuard from "./guards/client-guard";
+import ClientProfileUpdate from "./pages/tenant/client-profile-update";
 
 const queryClient = new QueryClient();
 
@@ -51,10 +51,10 @@ function App() {
       path: "/",
       element: <LandingPage />,
     },
-    //Tenant Routes
+    //Client Routes
     {
       path: "/client/login",
-      element: <TenantLogin />,
+      element: <ClientLogin />,
     },
     {
       path: "/client/forgot-password",
@@ -66,7 +66,7 @@ function App() {
     },
     {
       path: "/dashboard/client",
-      element: <TenantGuard />,
+      element: <ClientGuard />,
       children: [
         {
           element: <TenantLayout />,
@@ -77,11 +77,11 @@ function App() {
             },
             {
               path: "profile",
-              element: <TenantProfile />,
+              element: <ClientProfile />,
             },
             {
               path: "profile/update",
-              element: <TenantProfileUpdate />,
+              element: <ClientProfileUpdate />,
             },
             {
               path: "employee",
@@ -190,7 +190,7 @@ function App() {
       element: <EmployeeResetPassword />,
     },
     {
-      path: "/:tenantId/verify",
+      path: "/:clientId/verify",
       element: <AcceptInvite />,
     },
     //Admin Routes
@@ -214,7 +214,7 @@ function App() {
               element: <AdminDashboard />,
             },
             {
-              path: "tenants",
+              path: "clients",
               element: <Tenants />,
             },
             {

@@ -1,29 +1,18 @@
-import { getLoggedInEmployee } from "@/api/employee.api";
 import { AuthLoader } from "@/components/loader";
-import { useEmployeeActions, useEmployeeStore } from "@/store/useEmployeeStore";
-import { useQuery } from "@tanstack/react-query";
+import { useAuthEmployee } from "@/hooks/use-auth-employee";
+import { useEmployeeStore } from "@/store/use-employee-store";
 import { useEffect } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 export default function EmployeeGuard() {
-  const { setAuthEmployee } = useEmployeeActions();
+  const { data: employee, isLoading, isError } = useAuthEmployee();
   const location = useLocation();
 
-  const {
-    data: employee,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["employee"],
-    queryFn: () => getLoggedInEmployee(setAuthEmployee),
-    retry: false,
-  });
-
   useEffect(() => {
-    if (employee?.tenantId?.color) {
+    if (employee?.clientId?.color) {
       document.documentElement.style.setProperty(
-        "--tenant-primary",
-        employee.tenantId.color
+        "--client-primary",
+        employee.clientId.color
       );
     }
   }, [employee]);

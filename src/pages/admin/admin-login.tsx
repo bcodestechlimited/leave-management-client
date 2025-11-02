@@ -7,7 +7,6 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "@/api/auth.api";
-import { IAdminUser } from "@/interfaces/user.interface";
 
 type LoginFormInputs = {
   email: string;
@@ -34,7 +33,7 @@ export default function AdminLogin() {
 
   const mutation = useMutation({
     mutationFn: authService.adminSignIn,
-    onSuccess: (user: IAdminUser) => {
+    onSuccess: () => {
       // console.log({ user });
 
       // Admin

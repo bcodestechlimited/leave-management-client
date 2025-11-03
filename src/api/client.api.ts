@@ -11,8 +11,11 @@ export const updateClientLeaveRequest = async (payload: {
 
   try {
     const response = await axiosInstance.put(
-      `/client/leave/leave-request/${payload.leaveId}`,
-      payload
+      `/leave/${payload.leaveId}/client`,
+      {
+        status: payload.status,
+        reason: payload.reason,
+      }
     );
     return response.data?.data;
   } catch (error) {

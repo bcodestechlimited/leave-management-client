@@ -13,8 +13,8 @@ interface RegisterFormInputs {
 }
 
 export default function EmployeeRegister() {
-  const { tenantId, token, email } = useParams<{
-    tenantId: string;
+  const { clientId, token, email } = useParams<{
+    clientId: string;
     token: string;
     email: string;
   }>();
@@ -43,7 +43,7 @@ export default function EmployeeRegister() {
 
   const onSubmit: SubmitHandler<RegisterFormInputs> = (data) => {
     const newData = {
-      tenantId,
+      clientId,
       token,
       email,
       password: data.password,

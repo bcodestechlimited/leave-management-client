@@ -62,11 +62,11 @@ export const getEmployeeDetails = async (employeeId: string | undefined) => {
 };
 
 export const acceptInvite = async (payload: {
-  tenantId: string;
+  clientId: string;
   token: string;
 }) => {
   try {
-    localStorage.setItem("client-id", payload.tenantId);
+    localStorage.setItem("client-id", payload.clientId);
     const response = await axiosInstance.put(
       `/employee/invite?token=${payload.token}`
     );
@@ -104,7 +104,7 @@ export const updateEmployeeDetails = async (payload: any) => {
 export const employeeSignUp = async (payload: {
   email: string | undefined;
   password: string | undefined;
-  tenantId: string | undefined;
+  clientId: string | undefined;
   token: string | undefined;
 }) => {
   try {

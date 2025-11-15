@@ -10,7 +10,7 @@ export const updateEmployeeDetailsByTenant = async (payload: any) => {
 
   try {
     const response = await axiosInstance.put(
-      `/tenant/employee/${payload._id}`,
+      `/employee/${payload._id}/client`,
       payload
     );
     return response.data;

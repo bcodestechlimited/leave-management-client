@@ -187,3 +187,12 @@ export const getEmployeeFullName = (employee: IEmployee) => {
   const { firstname, middlename, surname } = employee;
   return [firstname, middlename, surname].filter(Boolean).join(" ");
 };
+
+export const getEmployeeInitials = (employee: IEmployee) => {
+  if (!employee) return "--";
+  const { firstname, middlename, surname } = employee;
+  return [firstname, middlename, surname]
+    .filter(Boolean)
+    .map((name) => name.charAt(0))
+    .join("");
+};

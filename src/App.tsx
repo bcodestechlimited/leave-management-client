@@ -7,7 +7,7 @@ import Employee from "./pages/tenant/employee";
 import EmployeeInvites from "./pages/tenant/employee-invites";
 import EmployeeRegister from "./pages/employee/employee-register";
 import EmployeeLayout from "./layouts/employee-layout";
-import EmployeeDashboard from "./pages/employee/employee-dashboard";
+import EmployeeDashboard from "./pages/employee/dashboard/employee-dashboard";
 import EmployeeGuard, { IsEmployeeAdmin } from "./guards/employee-guard";
 import AcceptInvite from "./pages/employee/accept-invite";
 import AdminLogin from "./pages/admin/admin-login";

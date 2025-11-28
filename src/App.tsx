@@ -13,7 +13,6 @@ import AcceptInvite from "./pages/employee/accept-invite";
 import AdminLogin from "./pages/admin/admin-login";
 import AdminGuard from "./guards/admin-guard";
 import AdminLayout from "./layouts/admin-layout";
-import Tenants from "./pages/admin/tenants";
 import EmployeeProfile from "./pages/employee/employee-profile";
 import EmployeeForgotPassword from "./pages/employee/employee-forgot-password";
 import EmployeeLogin from "./pages/employee/employee-login";
@@ -42,6 +41,9 @@ import ClientLogin from "./pages/tenant/client-login";
 import ClientProfile from "./pages/tenant/client-profile";
 import ClientGuard from "./guards/client-guard";
 import ClientProfileUpdate from "./pages/tenant/client-profile-update";
+import AdminEmployees from "./pages/admin/employees/admin-employees";
+import Clients from "./pages/admin/clients/clients";
+import AdminEmployeeInvites from "./pages/admin/invites/admin-employee-invites";
 
 const queryClient = new QueryClient();
 
@@ -215,7 +217,7 @@ function App() {
             },
             {
               path: "clients",
-              element: <Tenants />,
+              element: <Clients />,
             },
             {
               path: "leaves",
@@ -224,6 +226,18 @@ function App() {
             {
               path: "leaves/:leaveId",
               element: <AdminLeaveDetail />,
+            },
+            {
+              path: "employees/",
+              element: <AdminEmployees />,
+            },
+            {
+              path: "employees/:employeeId",
+              element: <AdminEmployees />,
+            },
+            {
+              path: "invites",
+              element: <AdminEmployeeInvites />,
             },
           ],
         },

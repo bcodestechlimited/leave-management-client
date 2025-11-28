@@ -1,4 +1,11 @@
-import { Users, LogOut, ChevronDown, LayoutDashboardIcon } from "lucide-react";
+import {
+  Users,
+  LogOut,
+  ChevronDown,
+  LayoutDashboardIcon,
+  FileStack,
+  UserPen,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -28,14 +35,26 @@ const routes: Route[] = [
   {
     name: "Clients",
     path: "/dashboard/admin/clients",
-    icon: <Users className="w-5 h-5" />,
+    icon: <UserPen className="w-5 h-5" />,
     // submenu: [],
   },
   {
     name: "Leaves",
     path: "/dashboard/admin/leaves",
-    icon: <Users className="w-5 h-5" />,
+    icon: <FileStack className="w-5 h-5" />,
     // submenu: [],
+  },
+  {
+    name: "Employees",
+    path: "/dashboard/admin/employees",
+    icon: <Users className="w-5 h-5" />,
+    submenu: [
+      {
+        name: "Invites",
+        path: "/dashboard/admin/invites",
+        icon: <UserPen className="w-4 h-4" />,
+      },
+    ],
   },
 ];
 

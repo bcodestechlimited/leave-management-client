@@ -148,7 +148,7 @@ export const getAuthTenant = async (
   updateTenant: (tenant: any) => void
 ) => {
   try {
-    const response = await axiosInstance.get(`/tenant/auth`);
+    const response = await axiosInstance.get(`/client/auth`);
     const tenant = response.data?.data?.tenant;
     updateTenant(tenant);
     return response.data?.data;
@@ -165,7 +165,7 @@ export const tenantSendPasswordResetLink = async (payload: {
 
   try {
     const response = await axiosInstance.post(
-      `/tenant/auth/forgot-password`,
+      `/client/auth/forgot-password`,
       payload
     );
     return response.data;
@@ -187,7 +187,7 @@ export const tenantResetPassword = async (payload: {
 
   try {
     const response = await axiosInstance.post(
-      `/tenant/auth/reset-password`,
+      `/client/auth/reset-password`,
       payload
     );
 

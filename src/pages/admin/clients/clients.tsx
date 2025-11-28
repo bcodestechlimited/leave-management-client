@@ -6,9 +6,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import DataTable from "@/components/table";
 import { getAllClients } from "@/api/admin.api";
-import AddClientModal from "./modal/add-client-modal";
+import AddClientModal from "./modals/add-client-modal";
 
-export default function Tenants() {
+export default function Clients() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [searchParams] = useSearchParams();

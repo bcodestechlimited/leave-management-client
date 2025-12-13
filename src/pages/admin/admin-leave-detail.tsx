@@ -152,20 +152,22 @@ export default function AdminLeaveDetail() {
             </p>
           )}
 
-        <div className="flex gap-4 py-6">
-          <Button
-            className="bg-green-700"
-            onClick={() => setIsApproveModalOpen(true)}
-          >
-            Approve
-          </Button>
-          <Button
-            className="bg-red-700"
-            onClick={() => setIsRejectModalOpen(true)}
-          >
-            Reject
-          </Button>
-        </div>
+        {leaveRequest?.status !== "approved" && (
+          <div className="flex gap-4 py-6">
+            <Button
+              className="bg-green-700"
+              onClick={() => setIsApproveModalOpen(true)}
+            >
+              Approve
+            </Button>
+            <Button
+              className="bg-red-700"
+              onClick={() => setIsRejectModalOpen(true)}
+            >
+              Reject
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Approve Modal */}

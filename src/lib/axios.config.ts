@@ -25,4 +25,25 @@ axiosInstance.interceptors.request.use(
   }
 );
 
+// axiosInstance.interceptors.response.use(
+//   (response) => response,
+//   (error: AxiosError) => {
+//     if (error.response?.status === 401) {
+//       // --- Handle Unauthorized globally ---
+
+//       // Optionally clear stored auth values
+//       localStorage.removeItem("token");
+//       localStorage.removeItem("client-id");
+
+//       // Optional: redirect to home
+//       window.location.href = "/";
+
+//       // Optional: you can also notify or log out in your UI
+//       // E.g. toast.error("Session expired, please log in again.");
+//     }
+
+//     return Promise.reject(error);
+//   }
+// );
+
 export default axiosInstance;

@@ -5,6 +5,8 @@ import {
   LayoutDashboardIcon,
   FileStack,
   UserPen,
+  Users2,
+  FileEdit,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -39,12 +41,6 @@ const routes: Route[] = [
     // submenu: [],
   },
   {
-    name: "Leaves",
-    path: "/dashboard/admin/leaves",
-    icon: <FileStack className="w-5 h-5" />,
-    // submenu: [],
-  },
-  {
     name: "Employees",
     path: "/dashboard/admin/employees",
     icon: <Users className="w-5 h-5" />,
@@ -55,6 +51,28 @@ const routes: Route[] = [
         icon: <UserPen className="w-4 h-4" />,
       },
     ],
+  },
+  {
+    name: "Line Managers",
+    path: "/dashboard/admin/line-managers",
+    icon: <Users2 className="w-5 h-5" />,
+  },
+  {
+    name: "Leaves",
+    path: "/dashboard/admin/leaves",
+    icon: <FileStack className="w-5 h-5" />,
+    submenu: [
+      {
+        name: "Leave Types",
+        path: "/dashboard/admin/leaves/types",
+        icon: <FileEdit className="w-4 h-4" />,
+      },
+    ],
+  },
+  {
+    name: "Level",
+    path: "/dashboard/admin/level",
+    icon: <UserPen className="w-5 h-5" />,
   },
 ];
 

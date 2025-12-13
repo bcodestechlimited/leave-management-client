@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { clientLogin, validateClientId } from "@/api/tenant.api";
 import { toast } from "sonner";
 import { useClientActions } from "@/store/use-client-store";
+import { Eye, EyeOff } from "lucide-react";
 
 type ClientIdFormInputs = {
   clientId: string;
@@ -20,6 +21,7 @@ type LoginFormInputs = {
 
 export default function ClientLogin() {
   const [isClientIdValid, setIsClientIdValid] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard/client";
@@ -145,19 +147,32 @@ export default function ClientLogin() {
             <Label htmlFor="password" className="block mb-1 font-medium">
               Password
             </Label>
-            <Input
-              id="password"
-              type="password"
-              {...registerLogin("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 5,
-                  message: "Password must be at least 6 characters long",
-                },
-              })}
-              placeholder="Enter your password"
-              className="w-full"
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                {...registerLogin("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 5,
+                    message: "Password must be at least 6 characters long",
+                  },
+                })}
+                placeholder="Enter your password"
+                className="w-full"
+              />
+              {showPassword ? (
+                <Eye
+                  className="absolute w-5 right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                  onClick={() => setShowPassword(false)}
+                />
+              ) : (
+                <EyeOff
+                  className="absolute w-5 right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                  onClick={() => setShowPassword(true)}
+                />
+              )}
+            </div>
             {loginErrors.password && (
               <p className="text-red-500 text-sm mt-1">
                 {loginErrors.password.message}

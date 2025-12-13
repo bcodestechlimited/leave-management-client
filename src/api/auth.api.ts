@@ -32,7 +32,7 @@ class AuthService {
       useAdminStore.getState().actions.setAdmin(admin);
       return admin;
     } catch (error) {
-      handleAxiosError(error, "Failed to get user");
+      handleAxiosError(error, "Failed to get admin");
     }
   };
 

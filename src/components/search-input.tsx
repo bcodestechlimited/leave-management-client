@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Input } from "./ui/input";
 
-export default function SearchInput() {
+export default function SearchInput({ placeholder }: { placeholder?: string }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchInput, setSearchInput] = useState<string>(
     searchParams.get("search") || ""
@@ -29,7 +29,7 @@ export default function SearchInput() {
   return (
     <Input
       type="text"
-      placeholder="Search by name or email"
+      placeholder={placeholder || `Search by name or email`}
       value={searchInput}
       onChange={handleSearchChange}
       className="w-64"

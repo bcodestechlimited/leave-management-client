@@ -119,7 +119,7 @@ export const updateLeaveRequest = async ({
 //LeaveTypes
 export const getLeaveTypes = async (params: Params) => {
   try {
-    const response = await axiosInstance.get(`/leave/leave-type`, {
+    const response = await axiosInstance.get(`/leave-type`, {
       params,
     });
     const data = response?.data?.data;
@@ -136,7 +136,7 @@ export const getLeaveTypes = async (params: Params) => {
 
 export const addLeaveType = async (payload: any) => {
   try {
-    const response = await axiosInstance.post(`/leave/leave-type`, payload);
+    const response = await axiosInstance.post(`/leave-type`, payload);
     const leaveType = response?.data?.data;
     return leaveType;
   } catch (error) {
@@ -154,7 +154,7 @@ export const editLeaveType = async (updatedLeaveType: any) => {
 
   try {
     const response = await axiosInstance.put(
-      `/leave/leave-type/${updatedLeaveType._id}`,
+      `/leave-type/${updatedLeaveType._id}`,
       updatedLeaveType
     );
     const leaveType = response?.data?.data?.leaveType;

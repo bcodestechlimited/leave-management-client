@@ -10,8 +10,6 @@ import {
 import { addLevel } from "@/api/level.api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 interface AddLevelModalProps {
   isOpen: boolean;
@@ -54,8 +52,8 @@ export default function AddLevelModal({ isOpen, onClose }: AddLevelModalProps) {
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           {/* Level Name */}
           <div>
-            <Label className="block text-sm font-medium mb-1">Level Name</Label>
-            <Input
+            <label className="block text-sm font-medium mb-1">Level Name</label>
+            <input
               type="text"
               {...register("name", { required: "Level name is required" })}
               className="w-full p-2 border rounded"

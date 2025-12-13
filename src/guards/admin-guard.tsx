@@ -9,6 +9,8 @@ export default function AdminGuard() {
     return <AuthLoader isLoading={isLoading} />;
   }
 
+  console.log({ isError });
+
   if (!admin || isError) {
     return <Navigate to="/admin/login" replace />;
   }

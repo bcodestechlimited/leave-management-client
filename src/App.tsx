@@ -44,6 +44,9 @@ import ClientProfileUpdate from "./pages/tenant/client-profile-update";
 import AdminEmployees from "./pages/admin/employees/admin-employees";
 import Clients from "./pages/admin/clients/clients";
 import AdminEmployeeInvites from "./pages/admin/invites/admin-employee-invites";
+import AdminLeaveTypes from "./pages/admin/leave-types/admin-leave-types";
+import AdminLevels from "./pages/admin/levels/admin-levels";
+import AdminLineManagers from "./pages/admin/line-managers/admin-line-managers";
 
 const queryClient = new QueryClient();
 
@@ -224,6 +227,10 @@ function App() {
               element: <AdminLeaves />,
             },
             {
+              path: "leaves/types",
+              element: <AdminLeaveTypes />,
+            },
+            {
               path: "leaves/:leaveId",
               element: <AdminLeaveDetail />,
             },
@@ -236,8 +243,16 @@ function App() {
               element: <AdminEmployees />,
             },
             {
+              path: "line-managers",
+              element: <AdminLineManagers />,
+            },
+            {
               path: "invites",
               element: <AdminEmployeeInvites />,
+            },
+            {
+              path: "level",
+              element: <AdminLevels />,
             },
           ],
         },

@@ -8,6 +8,7 @@ import { Loader } from "@/components/loader";
 import AddLevelModal from "./_modals/add-level-modal";
 import EditLevelModal from "./_modals/edit-level-modal";
 import SwitchTenants from "../_components/switch-tenants";
+import { cn } from "@/lib/utils";
 
 interface Level {
   _id: string;
@@ -56,6 +57,8 @@ export default function AdminLevels() {
   if (isPending) {
     return <Loader isLoading={isPending} />;
   }
+
+  console.log({ level: data.levels });
 
   return (
     <div>
@@ -117,12 +120,22 @@ export default function AdminLevels() {
                                   _id: string;
                                   name: string;
                                   defaultBalance: string;
+                                  isActive: boolean;
                                 }) => (
                                   <li key={leaveType._id} className="mb-1">
                                     <strong className="capitalize">
                                       {leaveType.name}
                                     </strong>
-                                    : {leaveType.defaultBalance}
+                                    :{leaveType.defaultBalance}
+                                    <span
+                                      className={cn(
+                                        "inline-block w-2 h-2 ml-2 rounded-full",
+                                        {
+                                          "bg-green-500": leaveType.isActive,
+                                          "bg-red-500": !leaveType.isActive,
+                                        }
+                                      )}
+                                    ></span>{" "}
                                   </li>
                                 )
                               )}

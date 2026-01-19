@@ -11,7 +11,7 @@ export const adminLoginAsEmployee = async (payload: {
   try {
     const response = await axiosInstance.post(
       `/admin/auth/login/employee`,
-      payload
+      payload,
     );
 
     const token = response?.data?.data?.token;
@@ -43,7 +43,7 @@ export const getAllClients = async (params: Params) => {
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to fetch employees"
+        error.response?.data?.message || "Failed to fetch employees",
       );
     }
     throw error;
@@ -83,7 +83,7 @@ export const getLeaveRequestAnalyticsForAdmin = async (params: {
     if (error instanceof AxiosError) {
       throw new Error(
         error.response?.data?.message ||
-          "Failed to fetch analytics for leave requests"
+          "Failed to fetch analytics for leave requests",
       );
     }
     throw error;
@@ -104,7 +104,7 @@ export const getAllLeavesForAdmin = async (params: Params) => {
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to fetch leaves - admin"
+        error.response?.data?.message || "Failed to fetch leaves - admin",
       );
     }
     throw error;
@@ -121,18 +121,39 @@ export const updateLeaveRequestForAdmin = async ({
   reason: string;
 }) => {
   try {
+    const response = await axiosInstance.put(`/admin/leave/${leaveId}`, {
+      status,
+      reason,
+    });
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message || "Failed to update leave",
+      );
+    }
+    throw error;
+  }
+};
+
+export const updateLeaveRequestDate = async (
+  leaveId: string,
+  payload: {
+    startDate: string;
+    duration: number;
+    resumptionDate: string;
+  },
+) => {
+  try {
     const response = await axiosInstance.put(
-      `/admin/leave/${leaveId}`,
-      {
-        status,
-        reason,
-      }
+      `/admin/leave/${leaveId}/date`,
+      payload,
     );
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to update leave"
+        error.response?.data?.message || "Failed to update leave date",
       );
     }
     throw error;

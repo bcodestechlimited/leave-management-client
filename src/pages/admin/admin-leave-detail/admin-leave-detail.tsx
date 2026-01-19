@@ -7,20 +7,15 @@ import { useState } from "react";
 import { Leave } from "@/types/leave.types";
 import { toast } from "sonner";
 import { Loader } from "@/components/loader";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { updateLeaveRequestForAdmin } from "@/api/admin.api";
+import { ApproveLeaveModal } from "./_modals/approve-leave-modal";
+import { RejectLeaveModal } from "./_modals/reject-leave-modal";
+import { EditLeaveModal } from "./_modals/edit-leave-modal";
 
 export default function AdminLeaveDetail() {
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [reason, setReason] = useState("");
 
   const { leaveId } = useParams<{ leaveId: string }>();
@@ -42,7 +37,7 @@ export default function AdminLeaveDetail() {
     mutationFn: updateLeaveRequestForAdmin,
     onSuccess: () => {
       toast.success("Leave request updated successfully");
-      queryClient.invalidateQueries({ queryKey: ["leaveDetails"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-leave-detail"] });
       setIsApproveModalOpen(false);
       setIsRejectModalOpen(false);
       setReason("");
@@ -87,7 +82,17 @@ export default function AdminLeaveDetail() {
 
   return (
     <div className="text-start">
-      <h1 className="text-2xl font-semibold">Leave Details</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Leave Details</h1>
+        <Button
+          onClick={() => {
+            setIsEditModalOpen(true);
+          }}
+          className="px-6 font-medium"
+        >
+          Edit
+        </Button>
+      </div>
       <div className="flex flex-col gap-1 mt-5">
         <p>
           <strong>Employee Name:</strong>{" "}
@@ -130,7 +135,7 @@ export default function AdminLeaveDetail() {
           <strong>Status:</strong>
           <span
             className={`px-2 py-1 font-semibold rounded-lg ${getStatusClasses(
-              leaveRequest?.status
+              leaveRequest?.status,
             )}`}
           >
             {leaveRequest?.status}
@@ -171,85 +176,39 @@ export default function AdminLeaveDetail() {
       </div>
 
       {/* Approve Modal */}
-      <Dialog
+      <ApproveLeaveModal
         open={isApproveModalOpen}
         onOpenChange={(open) => {
           setIsApproveModalOpen(open);
           if (!open) setReason("");
         }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Approve Leave Request</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to approve this leave request?
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="Optional reason or comments"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-            />
-          </div>
-          <DialogFooter className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setIsApproveModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              className="bg-green-700"
-              onClick={handleApprove}
-              disabled={leaveActionMutation.isPending}
-            >
-              {leaveActionMutation.isPending ? "Processing..." : "Approve"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        reason={reason}
+        setReason={setReason}
+        onApprove={handleApprove}
+        isLoading={leaveActionMutation.isPending}
+      />
 
       {/* Reject Modal */}
-      <Dialog
+      <RejectLeaveModal
         open={isRejectModalOpen}
         onOpenChange={(open) => {
           setIsRejectModalOpen(open);
           if (!open) setReason("");
         }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Reject Leave Request</DialogTitle>
-            <DialogDescription>
-              Please provide a reason for rejecting this leave request.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="Reason for rejection (required)"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              required
-            />
-          </div>
-          <DialogFooter className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setIsRejectModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              className="bg-red-700"
-              onClick={handleReject}
-              disabled={leaveActionMutation.isPending || !reason.trim()}
-            >
-              {leaveActionMutation.isPending ? "Processing..." : "Reject"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        reason={reason}
+        setReason={setReason}
+        onReject={handleReject}
+        isLoading={leaveActionMutation.isPending}
+      />
+
+      {/* Edit Modal */}
+      <EditLeaveModal
+        open={isEditModalOpen}
+        onOpenChange={(open) => setIsEditModalOpen(open)}
+        leaveId={leaveRequest?._id || ""}
+        initialStartDate={leaveRequest?.startDate || ""}
+        initialDuration={Number(leaveRequest?.duration) || 0}
+      />
     </div>
   );
 }

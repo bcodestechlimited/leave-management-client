@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SwitchTenants from "./_components/switch-tenants";
+import SwitchTenants from "../_components/switch-tenants";
 import { getMonthlyLeaveReport } from "@/api/leave.api";
 import DataTable from "@/components/table";
 import {
@@ -52,7 +52,7 @@ const options = [
 
 export default function AdminLeaves() {
   const [clientId, setClientId] = useState<string>(
-    () => localStorage.getItem("client-id") || ""
+    () => localStorage.getItem("client-id") || "",
   );
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
@@ -79,7 +79,7 @@ export default function AdminLeaves() {
       link.href = url;
       link.setAttribute(
         "download",
-        `leave-report-${format(startDate as Date, "MMMM")}.xlsx`
+        `leave-report-${format(startDate as Date, "MMMM")}.xlsx`,
       ); // Adjust name/extension as needed
       document.body.appendChild(link);
       link.click();

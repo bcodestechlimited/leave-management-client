@@ -40,7 +40,7 @@ const options = [
 
 export default function AdminEmployeeInvites() {
   const [clientId, setClientId] = useState<string>(
-    () => localStorage.getItem("client-id") || ""
+    () => localStorage.getItem("client-id") || "",
   );
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -82,31 +82,26 @@ export default function AdminEmployeeInvites() {
     });
   };
 
-  console.log({ data });
-
   const columns = [
     {
       header: "Email",
       render: (row: any) => row.email || "N/A",
     },
     {
+      header: "Created At",
+      render: (row: any) => formatDate(row?.createdAt) || "N/A",
+    },
+    {
       header: "Expires At",
-      accessor: "expiresAt",
       render: (row: any) => formatDate(row?.expiresAt) || "N/A",
     },
     {
       header: "Status",
-      isStatus: true,
       render: (row: any) => {
-        if (row.expiresAt < Date.now()) {
-          return (
-            <span className={`capitalize p-2 ${getStatusClasses("expired")}`}>
-              Expired
-            </span>
-          );
-        }
         return (
-          <span className={`capitalize p-2 ${getStatusClasses(row.status)}`}>
+          <span
+            className={`capitalize p-2 rounded ${getStatusClasses(row.status)}`}
+          >
             {row.status}
           </span>
         );

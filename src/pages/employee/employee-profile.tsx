@@ -83,12 +83,16 @@ export default function EmployeeProfile() {
       </div>
       <div
         className={`bg-white shadow-md rounded-lg p-6 text-start ${cn(
-          employee?.isOnLeave && "bg-red-600"
+          employee?.isOnLeave && "bg-red-600",
         )}`}
       >
         <div className="mb-4 flex flex-col gap-3">
           <img className="w-44 h-44 rounded-lg" src={employee?.avatar} alt="" />
           <h2 className="text-xl font-semibold">Personal Information</h2>
+          <p className="text-gray-600">
+            <span className="font-semibold">Staff ID: </span>
+            {employee?.staffId ? employee?.staffId : "N/A"}
+          </p>
           <p className="text-gray-600">
             <span className="font-semibold">First Name: </span>
             {employee?.firstname ?? "N/A"}

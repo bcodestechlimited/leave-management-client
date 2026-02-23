@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { handleFetchBalances } from "@/lib/utils";
+import { cn, handleFetchBalances } from "@/lib/utils";
 import {
   Popover,
   PopoverContent,
@@ -22,6 +22,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { applyForLeave } from "@/api/leave.api";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
+import { useEmployeeStore } from "@/store/use-employee-store";
+import { CustomAlert } from "@/components/custom-alert";
+import { Link } from "react-router-dom";
 
 interface ApplyLeaveModalProps {
   isOpen: boolean;
@@ -35,6 +38,35 @@ interface ApplyLeaveFormData {
   duration: number;
   reason: string;
   document?: FileList;
+}
+
+// function calculateResumptionDate(startDate: Date | string, duration: number) {
+//   // const start = new Date(startDate); // Create a new Date object to avoid mutating the original date
+//   // start.setDate(start.getDate() + duration);
+//   // start.setDate(start.getDate() + 1);
+//   // const resumptionDate = start.toLocaleDateString("en-CA");
+//   // return resumptionDate;
+//   let start = new Date(startDate);
+//   let addedDays = 0;
+
+//   while (addedDays < duration) {
+//     start.setDate(start.getDate() + 1);
+//     // Skip weekends (Saturday = 6, Sunday = 0)
+//     if (start.getDay() !== 0 && start.getDay() !== 6) {
+//       addedDays++;
+//     }
+//   }
+
+//   return start.toLocaleDateString("en-CA"); // Returns in YYYY-MM-DD format
+// }
+
+function calculateResumptionDate(startDate: Date | string, duration: number) {
+  const start = new Date(startDate);
+
+  // Add duration days
+  start.setDate(start.getDate() + duration);
+
+  return start.toLocaleDateString("en-CA"); // YYYY-MM-DD
 }
 
 export default function ApplyLeaveModal({
@@ -63,6 +95,8 @@ export default function ApplyLeaveModal({
 
   const queryClient = useQueryClient();
 
+  const { employee } = useEmployeeStore();
+
   useEffect(() => {
     if (duration) {
       const newDate = calculateResumptionDate(startDate, duration);
@@ -71,26 +105,6 @@ export default function ApplyLeaveModal({
       clearErrors(["resumptionDate"]);
     }
   }, [duration, startDate]);
-
-  function calculateResumptionDate(startDate: Date | string, duration: number) {
-    // const start = new Date(startDate); // Create a new Date object to avoid mutating the original date
-    // start.setDate(start.getDate() + duration);
-    // start.setDate(start.getDate() + 1);
-    // const resumptionDate = start.toLocaleDateString("en-CA");
-    // return resumptionDate;
-    let start = new Date(startDate);
-    let addedDays = 0;
-
-    while (addedDays < duration) {
-      start.setDate(start.getDate() + 1);
-      // Skip weekends (Saturday = 6, Sunday = 0)
-      if (start.getDay() !== 0 && start.getDay() !== 6) {
-        addedDays++;
-      }
-    }
-
-    return start.toLocaleDateString("en-CA"); // Returns in YYYY-MM-DD format
-  }
 
   const { mutate, isPending } = useMutation({
     mutationFn: applyForLeave,
@@ -118,8 +132,6 @@ export default function ApplyLeaveModal({
       document: data.document?.[0],
       duration: Number(duration),
     };
-
-    console.log({ updatedData });
 
     mutate(updatedData);
   };
@@ -189,7 +201,7 @@ export default function ApplyLeaveModal({
                     setStartDate(date ? date.toLocaleDateString("en-CA") : "");
                     setValue(
                       "startDate",
-                      date ? date.toLocaleDateString("en-CA") : ""
+                      date ? date.toLocaleDateString("en-CA") : "",
                     );
 
                     clearErrors(["startDate"]);
@@ -311,6 +323,26 @@ export default function ApplyLeaveModal({
             )}
           </div>
 
+          <div className="flex flex-col gap-2">
+            {!employee?.staffId && (
+              <Link to="/dashboard/employee/profile">
+                <CustomAlert
+                  variant="warning"
+                  title="Please update your Staff ID before applying for a leave."
+                />
+              </Link>
+            )}
+
+            {!employee?.jobRole && (
+              <Link to="/dashboard/employee/profile">
+                <CustomAlert
+                  variant="warning"
+                  title="Please update your Job Role before applying for a leave."
+                />
+              </Link>
+            )}
+          </div>
+
           <div className="flex justify-end gap-2">
             <Button
               type="button"
@@ -322,8 +354,14 @@ export default function ApplyLeaveModal({
             </Button>
             <Button
               type="submit"
-              disabled={isPending}
-              className={`bg-[var(--tenant-primary)] hover:bg-[var(--tenant-primary)] hover:opacity-80`}
+              disabled={isPending || !employee?.staffId || !employee?.jobRole}
+              className={cn(
+                `bg-[var(--tenant-primary)] hover:bg-[var(--tenant-primary)] hover:opacity-80`,
+                {
+                  "cursor-not-allowed":
+                    isPending || !employee?.staffId || !employee?.jobRole,
+                },
+              )}
             >
               {isPending ? "Submitting..." : "Submit"}
             </Button>

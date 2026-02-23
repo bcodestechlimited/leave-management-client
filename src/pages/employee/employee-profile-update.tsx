@@ -16,6 +16,7 @@ import InviteModal from "./modals/employee-invite";
 import { CustomDropdown } from "@/components/custom-dropdown";
 
 export interface FormInputs {
+  staffId: string;
   firstname: string;
   middlename: string;
   surname: string;
@@ -36,7 +37,7 @@ export default function EmployeeProfileUpdate() {
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState<boolean>(false);
   const [accountType, setAccountType] = useState<"employee" | "lineManager">(
-    "employee"
+    "employee",
   );
 
   const queryClient = useQueryClient();
@@ -58,6 +59,7 @@ export default function EmployeeProfileUpdate() {
     clearErrors,
   } = useForm<FormInputs>({
     defaultValues: {
+      staffId: employee?.staffId,
       firstname: employee?.firstname,
       middlename: employee?.middlename,
       surname: employee?.surname,
@@ -108,6 +110,16 @@ export default function EmployeeProfileUpdate() {
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white shadow-md rounded-lg p-6 text-start space-y-4"
       >
+        <div>
+          <Label>Staff ID</Label>
+          <Input type="text" {...register("staffId")} className="w-full" />
+          {errors.staffId && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.staffId.message}
+            </p>
+          )}
+        </div>
+
         <div>
           <Label>First Name</Label>
           <Input type="text" {...register("firstname")} className="w-full" />

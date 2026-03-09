@@ -6,9 +6,11 @@ import { useState } from "react";
 import SwitchTenants from "./_components/switch-tenants";
 
 export default function AdminDashboard() {
-  const [selectedYear, setSelectedYear] = useState("2025");
+  const [selectedYear, setSelectedYear] = useState(
+    new Date().getFullYear().toString(),
+  );
   const [clientId, setClientId] = useState<string>(
-    () => localStorage.getItem("client-id") || ""
+    () => localStorage.getItem("client-id") || "",
   );
 
   const {

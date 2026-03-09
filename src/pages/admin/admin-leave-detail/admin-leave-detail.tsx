@@ -11,11 +11,12 @@ import { updateLeaveRequestForAdmin } from "@/api/admin.api";
 import { ApproveLeaveModal } from "./_modals/approve-leave-modal";
 import { RejectLeaveModal } from "./_modals/reject-leave-modal";
 import { EditLeaveModal } from "./_modals/edit-leave-modal";
+import { CancelLeaveModal } from "./_modals/cancel-leave-modal";
+
+type ModalStateEnum = "approve" | "reject" | "edit" | "cancel" | null;
 
 export default function AdminLeaveDetail() {
-  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
-  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [modalState, setModalState] = useState<ModalStateEnum>(null);
   const [reason, setReason] = useState("");
 
   const { leaveId } = useParams<{ leaveId: string }>();
@@ -38,8 +39,7 @@ export default function AdminLeaveDetail() {
     onSuccess: () => {
       toast.success("Leave request updated successfully");
       queryClient.invalidateQueries({ queryKey: ["admin-leave-detail"] });
-      setIsApproveModalOpen(false);
-      setIsRejectModalOpen(false);
+      setModalState(null);
       setReason("");
     },
     onError: (error) => {
@@ -47,6 +47,22 @@ export default function AdminLeaveDetail() {
         return toast.error(error.message);
       }
       toast.error("Failed to update leave request");
+    },
+  });
+
+  const cancelLeaveMutation = useMutation({
+    mutationFn: updateLeaveRequestForAdmin,
+    onSuccess: () => {
+      toast.success("Leave request cancelled successfully");
+      queryClient.invalidateQueries({ queryKey: ["admin-leave-detail"] });
+      setModalState(null);
+    },
+    onError: (error) => {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to cancel leave request");
+      }
     },
   });
 
@@ -72,6 +88,20 @@ export default function AdminLeaveDetail() {
     });
   };
 
+  const handleCancelLeave = () => {
+    if (!leaveRequest?._id) return;
+
+    cancelLeaveMutation.mutate({
+      leaveId: leaveRequest._id,
+      status: "cancelled",
+      reason: "Leave cancelled by admin",
+    });
+  };
+
+  const openModal = (modalType: ModalStateEnum) => {
+    setModalState(modalType);
+  };
+
   if (isLoading) {
     return <Loader isLoading={isLoading} />;
   }
@@ -84,14 +114,25 @@ export default function AdminLeaveDetail() {
     <div className="text-start">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Leave Details</h1>
-        <Button
-          onClick={() => {
-            setIsEditModalOpen(true);
-          }}
-          className="px-6 font-medium"
-        >
-          Edit
-        </Button>
+        <div className=" flex items-center gap-2">
+          <Button
+            onClick={() => {
+              openModal("cancel");
+            }}
+            className="px-6 font-medium"
+            disabled={leaveRequest?.status !== "pending"}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              openModal("edit");
+            }}
+            className="px-6 font-medium"
+          >
+            Edit
+          </Button>
+        </div>
       </div>
       <div className="flex flex-col gap-1 mt-5">
         <p>
@@ -161,14 +202,11 @@ export default function AdminLeaveDetail() {
           <div className="flex gap-4 py-6">
             <Button
               className="bg-green-700"
-              onClick={() => setIsApproveModalOpen(true)}
+              onClick={() => openModal("approve")}
             >
               Approve
             </Button>
-            <Button
-              className="bg-red-700"
-              onClick={() => setIsRejectModalOpen(true)}
-            >
+            <Button className="bg-red-700" onClick={() => openModal("reject")}>
               Reject
             </Button>
           </div>
@@ -177,10 +215,10 @@ export default function AdminLeaveDetail() {
 
       {/* Approve Modal */}
       <ApproveLeaveModal
-        open={isApproveModalOpen}
+        open={modalState === "approve"}
         onOpenChange={(open) => {
-          setIsApproveModalOpen(open);
           if (!open) setReason("");
+          openModal(open ? "approve" : null);
         }}
         reason={reason}
         setReason={setReason}
@@ -190,10 +228,10 @@ export default function AdminLeaveDetail() {
 
       {/* Reject Modal */}
       <RejectLeaveModal
-        open={isRejectModalOpen}
+        open={modalState === "reject"}
         onOpenChange={(open) => {
-          setIsRejectModalOpen(open);
           if (!open) setReason("");
+          openModal(open ? "reject" : null);
         }}
         reason={reason}
         setReason={setReason}
@@ -203,11 +241,21 @@ export default function AdminLeaveDetail() {
 
       {/* Edit Modal */}
       <EditLeaveModal
-        open={isEditModalOpen}
-        onOpenChange={(open) => setIsEditModalOpen(open)}
+        open={modalState === "edit"}
+        onOpenChange={(open) => {
+          if (!open) setReason("");
+          openModal(open ? "edit" : null);
+        }}
         leaveId={leaveRequest?._id || ""}
         initialStartDate={leaveRequest?.startDate || ""}
         initialDuration={Number(leaveRequest?.duration) || 0}
+      />
+
+      <CancelLeaveModal
+        open={modalState === "cancel"}
+        onOpenChange={(open) => openModal(open ? "cancel" : null)}
+        onCancelLeave={handleCancelLeave}
+        isLoading={cancelLeaveMutation.isPending}
       />
     </div>
   );

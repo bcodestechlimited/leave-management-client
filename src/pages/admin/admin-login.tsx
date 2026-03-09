@@ -7,6 +7,8 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "@/api/auth.api";
+import { AxiosError } from "axios";
+import { CustomAlert } from "@/components/custom-alert";
 
 type LoginFormInputs = {
   email: string;
@@ -14,6 +16,7 @@ type LoginFormInputs = {
 };
 
 export default function AdminLogin() {
+  const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -23,14 +26,6 @@ export default function AdminLogin() {
 
   const navigate = useNavigate();
 
-  // const onSubmit = async (data: LoginFormInputs) => {
-  //   console.log("Login Data:", data);
-  //   await loginAdmin(data, () => {
-  //     navigate("/dashboard/admin");
-  //   });
-  //   // Perform login action (e.g., API call)
-  // };
-
   const mutation = useMutation({
     mutationFn: authService.adminSignIn,
     onSuccess: () => {
@@ -39,16 +34,18 @@ export default function AdminLogin() {
       // Admin
       navigate("/dashboard/admin");
     },
-    onError: (error: any) => {
-      // toast.error(error.message || "Something went wrong");
-      // setError(error.message || "Something went wrong");
-      console.log(error);
+    onError: (error: unknown) => {
+      if (error instanceof AxiosError) {
+        setError(error?.message || "Something went wrong");
+        return;
+      }
+
+      setError("Something went wrong");
     },
   });
 
-  /** ---- Submit Handler ---- */
   const onSubmit = (data: LoginFormInputs) => {
-    // setError(null);
+    setError(null);
 
     mutation.mutateAsync(data);
   };
@@ -113,6 +110,8 @@ export default function AdminLogin() {
             </p>
           )}
         </div>
+
+        {error && <CustomAlert variant="error" title={error} />}
 
         {/* Submit Button */}
         <Button type="submit" disabled={mutation.isPending} className="w-full">

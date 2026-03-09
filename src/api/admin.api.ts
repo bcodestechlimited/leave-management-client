@@ -117,7 +117,7 @@ export const updateLeaveRequestForAdmin = async ({
   reason,
 }: {
   leaveId: string;
-  status: "approved" | "rejected";
+  status: "approved" | "rejected" | "cancelled";
   reason: string;
 }) => {
   try {

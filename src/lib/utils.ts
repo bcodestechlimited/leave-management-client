@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export const handleAxiosError = (
   error: any,
-  alternateMessage?: string
+  alternateMessage?: string,
 ): string => {
   // console.log({ error: error.response?.data?.errors });
 
@@ -20,7 +20,7 @@ export const handleAxiosError = (
 
   if (error instanceof AxiosError && error.response?.status === 422) {
     throw new Error(
-      error.response?.data?.errors[0].message || alternateMessage
+      error.response?.data?.errors[0].message || alternateMessage,
     );
   }
   if (error instanceof AxiosError) {
@@ -60,7 +60,7 @@ export function formatDate(dateString: string) {
 export const handleFetchLevels = async (search: string) => {
   try {
     const response = await axiosInstance.get(
-      `/level?search=${encodeURIComponent(search)}&limit=5`
+      `/level?search=${encodeURIComponent(search)}&limit=5`,
     );
 
     const levels = response?.data?.data?.levels;
@@ -78,8 +78,8 @@ export const handleFetchEmployees = async (search: string) => {
   try {
     const response = await axiosInstance.get(
       `/employee?search=${encodeURIComponent(
-        search
-      )}&limit=5&accountType=employee`
+        search,
+      )}&limit=5&accountType=employee`,
     );
     const employees = response?.data?.data?.employees;
 
@@ -102,8 +102,8 @@ export const handleFetchLineManagers = async (search: string) => {
   try {
     const response = await axiosInstance.get(
       `/employee?search=${encodeURIComponent(
-        search
-      )}&limit=5&accountType=lineManager`
+        search,
+      )}&limit=5&accountType=lineManager`,
     );
     const employees = response?.data?.data?.employees;
 
@@ -125,7 +125,7 @@ export const handleFetchLineManagers = async (search: string) => {
 export const handleFetchBalances = async (search: string) => {
   try {
     const response = await axiosInstance.get(
-      `/leave-balance?search=${encodeURIComponent(search)}&limit=5`
+      `/leave-balance?search=${encodeURIComponent(search)}&limit=5`,
     );
 
     const leaveBalances = response?.data?.data?.leaveBalances;
@@ -139,7 +139,7 @@ export const handleFetchBalances = async (search: string) => {
       }) => ({
         value: item.leaveType._id,
         label: `${item.leaveType.name} - ${item.balance} days left`,
-      })
+      }),
     );
   } catch {
     return [];
@@ -162,6 +162,8 @@ export function getStatusClasses(status: string | undefined | null) {
       return "bg-red-100 text-red-800";
     case "rejected":
       return "bg-red-100 text-red-800";
+    case "cancelled":
+      return "bg-rose-100 text-rose-800";
     default:
       return "bg-gray-100 text-gray-800";
   }

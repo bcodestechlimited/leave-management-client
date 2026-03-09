@@ -203,10 +203,15 @@ export default function AdminLeaveDetail() {
             <Button
               className="bg-green-700"
               onClick={() => openModal("approve")}
+              disabled={leaveRequest?.status !== "pending"}
             >
               Approve
             </Button>
-            <Button className="bg-red-700" onClick={() => openModal("reject")}>
+            <Button
+              className="bg-red-700"
+              onClick={() => openModal("reject")}
+              disabled={leaveRequest?.status !== "pending"}
+            >
               Reject
             </Button>
           </div>

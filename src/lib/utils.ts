@@ -164,6 +164,8 @@ export function getStatusClasses(status: string | undefined | null) {
       return "bg-red-100 text-red-800";
     case "cancelled":
       return "bg-rose-100 text-rose-800";
+    case "reversed":
+      return "bg-rose-100 text-rose-800";
     default:
       return "bg-gray-100 text-gray-800";
   }

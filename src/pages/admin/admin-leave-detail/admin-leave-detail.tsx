@@ -537,13 +537,24 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Leave } from "@/types/leave.types";
 import { toast } from "sonner";
-import { updateLeaveRequestForAdmin } from "@/api/admin.api";
+import {
+  reverseLeaveRequest,
+  updateLeaveRequestForAdmin,
+} from "@/api/admin.api";
 import { ApproveLeaveModal } from "./_modals/approve-leave-modal";
 import { RejectLeaveModal } from "./_modals/reject-leave-modal";
 import { EditLeaveModal } from "./_modals/edit-leave-modal";
 import { CancelLeaveModal } from "./_modals/cancel-leave-modal";
+import { ReverseLeaveModal } from "./_modals/reverse-leave-modal";
+import { Undo2 } from "lucide-react";
 
-type ModalStateEnum = "approve" | "reject" | "edit" | "cancel" | null;
+type ModalStateEnum =
+  | "approve"
+  | "reject"
+  | "edit"
+  | "cancel"
+  | "reverse"
+  | null;
 
 function getStatusStyles(status?: string): {
   bg: string;
@@ -688,6 +699,22 @@ export default function AdminLeaveDetail() {
     },
   });
 
+  const reverseLeaveMutation = useMutation({
+    mutationFn: reverseLeaveRequest,
+    onSuccess: () => {
+      toast.success("Leave request reversed successfully");
+      queryClient.invalidateQueries({ queryKey: ["admin-leave-detail"] });
+      setModalState(null);
+    },
+    onError: (error) => {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to reverse leave request");
+      }
+    },
+  });
+
   const handleApprove = () => {
     if (!leaveRequest?._id) return;
     leaveActionMutation.mutateAsync({
@@ -712,7 +739,8 @@ export default function AdminLeaveDetail() {
 
   const handleCancelLeave = () => {
     if (!leaveRequest?._id) return;
-    cancelLeaveMutation.mutate({
+
+    cancelLeaveMutation.mutateAsync({
       leaveId: leaveRequest._id,
       status: "cancelled",
       reason: "Leave cancelled by admin",
@@ -720,6 +748,12 @@ export default function AdminLeaveDetail() {
   };
 
   const openModal = (modalType: ModalStateEnum) => setModalState(modalType);
+  const handleReverseLeave = () => {
+    if (!leaveRequest?._id) return;
+    reverseLeaveMutation.mutateAsync(leaveRequest._id);
+  };
+
+  
 
   if (isLoading) return <AdminLeaveDetailSkeleton />;
   if (isError)
@@ -757,7 +791,31 @@ export default function AdminLeaveDetail() {
             variant="outline"
             size="sm"
             className="font-normal text-sm"
-            onClick={() => openModal("edit")}
+            onClick={() => {
+              openModal("reverse");
+            }}
+            disabled={
+              leaveRequest?.status !== "approved" &&
+              leaveRequest?.status !== "cancelled"
+            }
+          >
+            <Undo2 className="" /> Reverse
+          </Button>
+          <Button
+            onClick={() => {
+              openModal("cancel");
+            }}
+            className="px-6 font-medium"
+            disabled={leaveRequest?.status !== "pending"}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            onClick={() => {
+              openModal("edit");
+            }}
+            className="px-6 font-medium"
           >
             Edit
           </Button>
@@ -951,6 +1009,13 @@ export default function AdminLeaveDetail() {
         onOpenChange={(open) => openModal(open ? "cancel" : null)}
         onCancelLeave={handleCancelLeave}
         isLoading={cancelLeaveMutation.isPending}
+      />
+
+      <ReverseLeaveModal
+        open={modalState === "reverse"}
+        onOpenChange={(open) => openModal(open ? "reverse" : null)}
+        onReverseLeave={handleReverseLeave}
+        isLoading={reverseLeaveMutation.isPending}
       />
     </div>
   );

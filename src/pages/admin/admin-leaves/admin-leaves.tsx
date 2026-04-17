@@ -48,6 +48,14 @@ const options = [
     value: "rejected",
     label: "Rejected",
   },
+  {
+    value: "cancelled",
+    label: "Cancelled",
+  },
+  {
+    value: "reversed",
+    label: "Reversed",
+  },
 ];
 
 export default function AdminLeaves() {

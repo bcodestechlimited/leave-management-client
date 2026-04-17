@@ -17,7 +17,7 @@ export const getAllEmployees = async (params: Params) => {
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to fetch employees"
+        error.response?.data?.message || "Failed to fetch employees",
       );
     }
     throw error;
@@ -28,7 +28,7 @@ export const getAllLineManagers = async (params: Params) => {
   try {
     const response = await axiosInstance.get(
       `/employee?accountType=lineManager`,
-      { params }
+      { params },
     );
 
     const employees = response?.data?.data?.employees;
@@ -38,7 +38,7 @@ export const getAllLineManagers = async (params: Params) => {
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to fetch employees"
+        error.response?.data?.message || "Failed to fetch employees",
       );
     }
     throw error;
@@ -54,7 +54,7 @@ export const getEmployeeDetails = async (employeeId: string | undefined) => {
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to fetch employee"
+        error.response?.data?.message || "Failed to fetch employee",
       );
     }
     throw error;
@@ -68,7 +68,7 @@ export const acceptInvite = async (payload: {
   try {
     localStorage.setItem("client-id", payload.clientId);
     const response = await axiosInstance.put(
-      `/employee/invite?token=${payload.token}`
+      `/employee/invite?token=${payload.token}`,
     );
 
     return response.data;
@@ -76,7 +76,7 @@ export const acceptInvite = async (payload: {
     if (error instanceof AxiosError) {
       throw new Error(
         error.response?.data?.message ||
-          "Failed to accept invite. Please try again."
+          "Failed to accept invite. Please try again.",
       );
     }
     throw error;
@@ -87,13 +87,13 @@ export const updateEmployeeDetails = async (payload: any) => {
   try {
     const response = await axiosInstance.put(
       `/employee/admin/employee/${payload.employeeId}`,
-      payload
+      payload,
     );
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to update employee"
+        error.response?.data?.message || "Failed to update employee",
       );
     }
     throw error;
@@ -152,7 +152,7 @@ export const employeeSignIn = async (payload: {
 };
 
 export const getLoggedInEmployee = async (
-  updateEmployee: (employee: any) => void
+  updateEmployee: (employee: any) => void,
 ) => {
   try {
     const response = await axiosInstance.get(`/employee/auth`);
@@ -169,7 +169,7 @@ export const getLoggedInEmployee = async (
 };
 
 export const updateEmployeeProfileAPI = async (
-  data: Partial<UpdateEmployee>
+  data: Partial<UpdateEmployee>,
 ) => {
   try {
     const response = await axiosInstance.put(`/employee/auth`, data, {
@@ -184,7 +184,7 @@ export const updateEmployeeProfileAPI = async (
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to update profile"
+        error.response?.data?.message || "Failed to update profile",
       );
     }
     throw error;
@@ -197,13 +197,13 @@ export const forgotPasswordRequest = async (payload: { email: string }) => {
   try {
     const response = await axiosInstance.post(
       `/employee/auth/forgot-password`,
-      payload
+      payload,
     );
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to send to send request"
+        error.response?.data?.message || "Failed to send to send request",
       );
     }
     throw error;
@@ -219,14 +219,14 @@ export const resetPassword = async (payload: {
   try {
     const response = await axiosInstance.post(
       `/employee/auth/reset-password`,
-      payload
+      payload,
     );
 
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to reset password"
+        error.response?.data?.message || "Failed to reset password",
       );
     }
     throw error;
@@ -255,7 +255,7 @@ export const addLineManager = async (payload: any) => {
   try {
     const response = await axiosInstance.post(
       `/employee/add/line-manager`,
-      payload
+      payload,
     );
 
     return response.data;
@@ -271,7 +271,7 @@ export const addLineManager = async (payload: any) => {
       }
 
       throw new Error(
-        error.response?.data?.message || "Failed to add line manager"
+        error.response?.data?.message || "Failed to add line manager",
       );
     }
     throw error;
@@ -281,7 +281,7 @@ export const deleteLineManager = async (payload: any) => {
   try {
     const response = await axiosInstance.delete(
       `/tenant/line-manager/${payload._id}`,
-      payload
+      payload,
     );
 
     return response.data;
@@ -292,8 +292,29 @@ export const deleteLineManager = async (payload: any) => {
         throw new Error(error.response?.data?.errors[0].message);
       }
       throw new Error(
-        error.response?.data?.message || "Failed to delete line manager"
+        error.response?.data?.message || "Failed to delete line manager",
       );
+    }
+    throw error;
+  }
+};
+
+///////////////
+// Admin
+///////////////
+
+export const getEmployeeForAdmin = async (employeeId: string) => {
+  try {
+    const response = await axiosInstance.get(`/admin/employee/${employeeId}`);
+
+    return response.data?.data;
+  } catch (error) {
+    console.log(error);
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 422) {
+        throw new Error(error.response?.data?.errors[0].message);
+      }
+      throw new Error(error.response?.data?.message || "Failed get employee");
     }
     throw error;
   }

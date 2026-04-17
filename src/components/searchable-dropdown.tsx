@@ -80,7 +80,7 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between"
+            className="w-full justify-between capitalize"
           >
             {value ? capitalizeWords(value) : placeholder}
             <ChevronsUpDown className="opacity-50" />

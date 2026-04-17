@@ -31,8 +31,9 @@ export interface IEmployee {
       _id: string;
       url: string;
       fileType: string;
-    }
+    },
   ];
+  employmentStartDate: Date | null;
   leaveBalances: EmployeeLeaveBalance[];
 }
 

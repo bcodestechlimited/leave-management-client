@@ -7,8 +7,8 @@ import { getLevels } from "@/api/level.api";
 import { Loader } from "@/components/loader";
 import AddLevelModal from "./_modals/add-level-modal";
 import EditLevelModal from "./_modals/edit-level-modal";
-import SwitchTenants from "../_components/switch-tenants";
 import { cn } from "@/lib/utils";
+import { useClientStore } from "@/store/client.store";
 
 interface Level {
   _id: string;
@@ -16,14 +16,12 @@ interface Level {
 }
 
 export default function AdminLevels() {
-  const [clientId, setClientId] = useState<string>(
-    () => localStorage.getItem("client-id") || ""
-  );
+  const { clientId } = useClientStore();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState<Level | null>(null);
   const [expandedLevels, setExpandedLevels] = useState<Record<string, boolean>>(
-    {}
+    {},
   );
 
   const [searchParams] = useSearchParams();
@@ -31,7 +29,7 @@ export default function AdminLevels() {
   const search = searchParams.get("search") || "";
 
   const { data, isPending } = useQuery({
-    queryKey: ["levels"],
+    queryKey: ["levels", page, search, clientId],
     queryFn: () => getLevels({ page, limit: 10, search }),
   });
 
@@ -62,8 +60,6 @@ export default function AdminLevels() {
 
   return (
     <div>
-      <SwitchTenants clientId={clientId} setClientId={setClientId} />
-
       <div className="py-4">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-lg font-semibold">Levels</h1>
@@ -133,11 +129,11 @@ export default function AdminLevels() {
                                         {
                                           "bg-green-500": leaveType.isActive,
                                           "bg-red-500": !leaveType.isActive,
-                                        }
+                                        },
                                       )}
                                     ></span>{" "}
                                   </li>
-                                )
+                                ),
                               )}
                             </ul>
                           </td>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { getAllEmployees } from "@/api/employee.api";
@@ -17,18 +17,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import DeleteEmployeeModal from "./modals/delete-employee-modal";
 import { IEmployee } from "@/types/employee.types";
-import SwitchTenants from "../_components/switch-tenants";
+import { useClientStore } from "@/store/client.store";
 
 export default function AdminEmployees() {
-  const [clientId, setClientId] = useState<string>(
-    () => localStorage.getItem("client-id") || ""
-  );
+  const { clientId } = useClientStore();
   const [searchParams] = useSearchParams();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [employeeToEdit, setEmployeeToEdit] = useState<IEmployee | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState<IEmployee | null>(
-    null
+    null,
   );
 
   const page = parseInt(searchParams.get("page") || "1", 10);
@@ -42,10 +40,10 @@ export default function AdminEmployees() {
     },
   });
 
-  const handleEditClick = (employee: IEmployee) => {
-    setEmployeeToEdit(employee);
-    setIsEditModalOpen(true);
-  };
+  // const handleEditClick = (employee: IEmployee) => {
+  //   setEmployeeToEdit(employee);
+  //   setIsEditModalOpen(true);
+  // };
 
   const closeEditModal = () => {
     setEmployeeToEdit(null);
@@ -107,12 +105,17 @@ export default function AdminEmployees() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-fit">
-            <DropdownMenuItem
+            <Link to={`/dashboard/admin/employees/${row._id}`}>
+              <DropdownMenuItem className=" cursor-pointer hover:bg-gray-200">
+                View
+              </DropdownMenuItem>
+            </Link>
+            {/* <DropdownMenuItem
               className=" cursor-pointer hover:bg-gray-200"
               onClick={() => handleEditClick(row)}
             >
               Update
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
 
             <DropdownMenuItem
               className="cursor-pointer text-red-500 hover:bg-red-200"
@@ -130,8 +133,6 @@ export default function AdminEmployees() {
 
   return (
     <div className="space-y-6">
-      <SwitchTenants clientId={clientId} setClientId={setClientId} />
-
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Employees</h1>
         <div className="flex items-center gap-4">

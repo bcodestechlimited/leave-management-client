@@ -33,7 +33,7 @@ import EmployeeDetail from "./pages/employee/employee-detail";
 import EmployeeLeaveDetail from "./pages/employee/employee-leave-detail";
 import ClientLeaveDetail from "./pages/tenant/leave/client-leave-detail";
 import LineManagers from "./pages/tenant/line-manager";
-import AdminDashboard from "./pages/admin/admin-dashboard";
+import AdminDashboard from "./pages/admin/dashboard-home/dashboard-home";
 import AdminLeaves from "./pages/admin/admin-leaves/admin-leaves";
 import AdminLeaveDetail from "./pages/admin/admin-leave-detail/admin-leave-detail";
 import AdminLoginAsEmployee from "./pages/admin/admin-login-as-employee";
@@ -47,6 +47,7 @@ import AdminEmployeeInvites from "./pages/admin/invites/admin-employee-invites";
 import AdminLeaveTypes from "./pages/admin/leave-types/admin-leave-types";
 import AdminLevels from "./pages/admin/levels/admin-levels";
 import AdminLineManagers from "./pages/admin/line-managers/admin-line-managers";
+import AdminEmployeeDetail from "./pages/admin/employee-detail/admin-employee-detail";
 
 const queryClient = new QueryClient();
 
@@ -213,6 +214,7 @@ function App() {
       children: [
         {
           element: <AdminLayout />,
+          errorElement: <div>Something went wrong</div>,
           children: [
             {
               path: "",
@@ -235,12 +237,13 @@ function App() {
               element: <AdminLeaveDetail />,
             },
             {
-              path: "employees/",
+              path: "employees",
               element: <AdminEmployees />,
             },
             {
               path: "employees/:employeeId",
-              element: <AdminEmployees />,
+              element: <AdminEmployeeDetail />,
+              errorElement: <div>Something went wrong</div>,
             },
             {
               path: "line-managers",
@@ -253,6 +256,10 @@ function App() {
             {
               path: "level",
               element: <AdminLevels />,
+            },
+            {
+              path: "*",
+              element: <div>Page Not Found</div>,
             },
           ],
         },
@@ -268,7 +275,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Toaster position="top-right" />
       <RouterProvider router={router} />
-      {process.env.NODE_ENV === "development" && (
+      {import.meta.env.NODE_ENV === "development" && (
         <ReactQueryDevtools initialIsOpen={false} />
       )}
     </QueryClientProvider>

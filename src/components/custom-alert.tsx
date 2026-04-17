@@ -38,8 +38,17 @@ export function CustomAlert({
         <span>{variantIcons[variant]}</span>
 
         <div className="flex flex-col items-start">
-          {title && <AlertTitle>{title}</AlertTitle>}
-          {description && <AlertDescription>{description}</AlertDescription>}
+          {title && (
+            <AlertTitle className="font-semibold text-sm tracking-wide">
+              {title}
+            </AlertTitle>
+          )}
+
+          {description && (
+            <AlertDescription className="text-sm font-normal">
+              {description}
+            </AlertDescription>
+          )}
         </div>
       </div>
     </Alert>

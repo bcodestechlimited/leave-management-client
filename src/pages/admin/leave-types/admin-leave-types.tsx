@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import SwitchTenants from "../_components/switch-tenants";
+import { useClientStore } from "@/store/client.store";
 
 interface LeaveType {
   _id: string;
@@ -32,9 +32,7 @@ interface DetailedLeaveType extends Omit<LeaveType, "levelId"> {
 }
 
 export default function AdminLeaveTypes() {
-  const [clientId, setClientId] = useState<string>(
-    () => localStorage.getItem("client-id") || ""
-  );
+  const { clientId } = useClientStore();
   const [searchParams] = useSearchParams();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -157,8 +155,6 @@ export default function AdminLeaveTypes() {
   ];
   return (
     <div>
-      <SwitchTenants clientId={clientId} setClientId={setClientId} />
-
       <div className="py-4">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-lg font-semibold">Leave Types</h1>

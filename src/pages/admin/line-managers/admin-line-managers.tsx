@@ -25,18 +25,16 @@ import { toast } from "sonner";
 import { IEmployee } from "@/types/employee.types";
 import AddLineManagerModal from "./_modals/add-line-manager-modal";
 import EditLineManagerModal from "./_modals/edit-line-manager-modal";
-import SwitchTenants from "../_components/switch-tenants";
+import { useClientStore } from "@/store/client.store";
 
 export default function AdminLineManagers() {
-  const [clientId, setClientId] = useState<string>(
-    () => localStorage.getItem("client-id") || ""
-  );
+  const { clientId } = useClientStore();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [employeeToEdit, setEmployeeToEdit] = useState<IEmployee | null>(null);
   const [isAddManagerModalOpen, setIsAddManagerModalOpen] = useState(false);
 
   const [employeeToDelete, setEmployeeToDelete] = useState<IEmployee | null>(
-    null
+    null,
   );
   const [searchParams] = useSearchParams();
 
@@ -153,8 +151,6 @@ export default function AdminLineManagers() {
 
   return (
     <div className="space-y-6">
-      <SwitchTenants clientId={clientId} setClientId={setClientId} />
-
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold">Line Managers</h1>

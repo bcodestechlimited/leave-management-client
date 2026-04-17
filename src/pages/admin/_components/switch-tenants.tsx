@@ -9,16 +9,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader } from "@/components/loader";
 import { getAllClients } from "@/api/admin.api";
 import { Client } from "@/types/tenant.types";
+import { useClientStore } from "@/store/client.store";
 
-interface SwitchTenantsProps {
-  clientId: string;
-  setClientId: (clientId: string) => void;
-}
+export default function SwitchTenants() {
+  const { clientId, setClientId } = useClientStore();
 
-export default function SwitchTenants({
-  clientId,
-  setClientId,
-}: SwitchTenantsProps) {
   const {
     data: clientsData,
     isLoading: clientsLoading,

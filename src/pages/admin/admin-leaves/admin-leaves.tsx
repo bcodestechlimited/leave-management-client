@@ -1,5 +1,4 @@
 import { useState } from "react";
-import SwitchTenants from "../_components/switch-tenants";
 import { getMonthlyLeaveReport } from "@/api/leave.api";
 import DataTable from "@/components/table";
 import {
@@ -30,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getAllLeavesForAdmin } from "@/api/admin.api";
+import { useClientStore } from "@/store/client.store";
 
 const options = [
   {
@@ -59,9 +59,7 @@ const options = [
 ];
 
 export default function AdminLeaves() {
-  const [clientId, setClientId] = useState<string>(
-    () => localStorage.getItem("client-id") || "",
-  );
+  const { clientId } = useClientStore();
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -182,7 +180,6 @@ export default function AdminLeaves() {
 
   return (
     <div>
-      <SwitchTenants clientId={clientId} setClientId={setClientId} />
       <div>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-lg font-semibold">Leave History</h1>

@@ -173,3 +173,34 @@ export const reverseLeaveRequest = async (leaveId: string) => {
     throw error;
   }
 };
+
+export const getEmployeeLeaveBalances = async (employeeId: string) => {
+  try {
+    const response = await axiosInstance.get(
+      `/admin/employee/${employeeId}/leave-balances`,
+    );
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch leave balances",
+      );
+    }
+    throw error;
+  }
+};
+
+export const getTotalEmployeesByClient = async () => {
+  try {
+    const response = await axiosInstance.get(`/admin/employee/analytics`);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch employee analytics",
+      );
+    }
+    throw error;
+  }
+};

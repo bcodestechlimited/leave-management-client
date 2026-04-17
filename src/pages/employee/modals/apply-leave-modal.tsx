@@ -25,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { useEmployeeStore } from "@/store/use-employee-store";
 import { CustomAlert } from "@/components/custom-alert";
 import { Link } from "react-router-dom";
+import { addMonths } from "date-fns";
 
 interface ApplyLeaveModalProps {
   isOpen: boolean;
@@ -135,6 +136,19 @@ export default function ApplyLeaveModal({
 
     mutate(updatedData);
   };
+
+  const employmentStartDate = employee?.employmentStartDate
+    ? new Date(employee.employmentStartDate)
+    : null;
+
+  const eligibilityDate = employmentStartDate
+    ? addMonths(employmentStartDate, 6)
+    : null;
+
+  const hasNoStartDate = !employmentStartDate;
+
+  const isEligibleForLeave =
+    !!employmentStartDate && !!eligibilityDate && new Date() >= eligibilityDate;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -343,6 +357,22 @@ export default function ApplyLeaveModal({
             )}
           </div>
 
+          {hasNoStartDate && (
+            <CustomAlert
+              variant="warning"
+              title=" Please contact the admin."
+              description="Please contact the admin to update your employment start date."
+            />
+          )}
+
+          {employmentStartDate && !isEligibleForLeave && (
+            <CustomAlert
+              variant="warning"
+              title="Leave restriction"
+              description={`You will be eligible to apply for leave on ${eligibilityDate?.toDateString()}`}
+            />
+          )}
+
           <div className="flex justify-end gap-2">
             <Button
               type="button"
@@ -354,12 +384,22 @@ export default function ApplyLeaveModal({
             </Button>
             <Button
               type="submit"
-              disabled={isPending || !employee?.staffId || !employee?.jobRole}
+              disabled={
+                isPending ||
+                !employee?.staffId ||
+                !employee?.jobRole ||
+                hasNoStartDate ||
+                !isEligibleForLeave
+              }
               className={cn(
                 `bg-[var(--tenant-primary)] hover:bg-[var(--tenant-primary)] hover:opacity-80`,
                 {
                   "cursor-not-allowed":
-                    isPending || !employee?.staffId || !employee?.jobRole,
+                    isPending ||
+                    !employee?.staffId ||
+                    !employee?.jobRole ||
+                    hasNoStartDate ||
+                    !isEligibleForLeave,
                 },
               )}
             >

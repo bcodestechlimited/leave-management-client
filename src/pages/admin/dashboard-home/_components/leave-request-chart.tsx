@@ -1,4 +1,4 @@
-import { TrendingDown, TrendingUp } from "lucide-react";
+import { Loader, TrendingDown, TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import {
   Card,
@@ -21,6 +21,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useClientStore } from "@/store/client.store";
+import { useState } from "react";
+import { getLeaveRequestAnalyticsForAdmin } from "@/api/admin.api";
+import { useQuery } from "@tanstack/react-query";
 
 const chartConfig = {
   totalLeaveRequests: {
@@ -56,17 +60,23 @@ const months = [
   "December",
 ];
 
-interface ChartData {
-  selectedYear: string;
-  setSelectedYear: (year: string) => void;
-  chartData: any[];
-}
+export default function LeaveRequestsChart() {
+  const [selectedYear, setSelectedYear] = useState(
+    new Date().getFullYear().toString(),
+  );
+  const { clientId } = useClientStore();
 
-export default function LeaveRequestsChart({
-  selectedYear,
-  setSelectedYear,
-  chartData,
-}: ChartData) {
+  const {
+    data: chartData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryFn: () =>
+      getLeaveRequestAnalyticsForAdmin({ year: selectedYear, clientId }),
+    queryKey: ["leave-request-analytics", selectedYear, clientId],
+    enabled: !!clientId,
+  });
+
   // Get current month index (0-based)
   const currentMonthIndex = new Date().getMonth();
 
@@ -94,7 +104,20 @@ export default function LeaveRequestsChart({
     percentageChange = "No change";
   }
 
-  console.log({ lastMonthData, prevMonthData, lastMonthName, prevMonthName });
+  if (!clientId) {
+    return <div className="text-center py-4">Please select a client</div>;
+  }
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center py-4">
+        <Loader className=" animate-spin" />;
+      </div>
+    );
+
+  if (isError)
+    return (
+      <div className="text-center py-4 text-red-500">Failed to load data</div>
+    );
 
   return (
     <Card className="w-full my-6">

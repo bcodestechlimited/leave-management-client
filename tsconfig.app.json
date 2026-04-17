@@ -21,7 +21,10 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "baseUrl": ".",
+    // "baseUrl": ".",
+    // "paths": {
+    //   "*": ["./*"]
+    // },
     "paths": {
       "@/*": ["./src/*"]
     }

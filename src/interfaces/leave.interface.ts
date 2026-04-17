@@ -2,7 +2,7 @@ import { IClient } from "./client.interface";
 import { IEmployee } from "./employee.interface";
 import ILeaveType from "./leave-type.interface";
 
-export default interface ILeave extends Document {
+export default interface ILeave {
   clientId: IClient;
   employee: IEmployee;
   reliever: IEmployee;

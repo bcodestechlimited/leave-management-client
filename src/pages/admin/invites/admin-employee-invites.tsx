@@ -9,7 +9,6 @@ import { fetchAllInvites } from "@/api/tenant.api";
 import { formatDate, getStatusClasses } from "@/lib/utils";
 import InviteModal from "./modals/invite-modal";
 import BulkInviteModal from "./modals/bulk-invite-modal";
-import SwitchTenants from "../_components/switch-tenants";
 import SearchInput from "@/components/search-input";
 import {
   Select,
@@ -18,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useClientStore } from "@/store/client.store";
 
 const options = [
   {
@@ -39,9 +39,7 @@ const options = [
 ];
 
 export default function AdminEmployeeInvites() {
-  const [clientId, setClientId] = useState<string>(
-    () => localStorage.getItem("client-id") || "",
-  );
+  const { clientId } = useClientStore();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
@@ -128,8 +126,6 @@ export default function AdminEmployeeInvites() {
 
   return (
     <div className="space-y-6">
-      <SwitchTenants clientId={clientId} setClientId={setClientId} />
-
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-lg font-semibold">Employee Invites</h1>
         <div className="flex gap-2">
